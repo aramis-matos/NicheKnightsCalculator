@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-base-100" data-theme="coffee">
     <nav>
       <ul>
         <li>
