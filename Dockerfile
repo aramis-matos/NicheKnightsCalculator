@@ -4,8 +4,8 @@ WORKDIR /src
 
 FROM base AS build
 
-COPY --link package.json bun.lockb /src/
+COPY --link ./server/package.json ./server/bun.lockb /src/
 
 RUN bun i
 
-COPY --link . .
+COPY --link ./server .

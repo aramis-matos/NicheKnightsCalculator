@@ -1,8 +1,9 @@
 node_modules
 env
 .output
-.nuxt
 .gitignore
+.nuxt
 README.MD
 db
 .env
+db_backup

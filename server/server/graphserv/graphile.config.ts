@@ -2,10 +2,9 @@ import "graphile-config"
 import "postgraphile"
 import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
 import { makePgService } from "postgraphile/adaptors/pg";
-import {PgManyToManyPreset} from "@graphile-contrib/pg-many-to-many";
 
 export const preset: GraphileConfig.Preset = {
-    extends: [PostGraphileAmberPreset, PgManyToManyPreset],
+    extends: [PostGraphileAmberPreset],
     grafserv: {
         graphqlPath: "/api/graphql"
     },

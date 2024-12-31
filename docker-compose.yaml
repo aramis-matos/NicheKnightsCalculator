@@ -41,16 +41,11 @@ services:
       watch:
         - action: sync
           path: ./server
-          target: /src/server
-          ignore:
-            - node_modules
-        - action: sync
-          path: ./app.vue
-          target: /src/app.vue
+          target: /src
           ignore:
             - node_modules
         - action: rebuild
-          path: package.json
+          path: ./server/package.json
 
 volumes:
   db:
