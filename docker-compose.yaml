@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    # ports:
+    #   - 5432:5432
+    env_file:
+      - env/db.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      - ./db_backup/backup.sql:/docker-entrypoint-initdb.d/backup.sql
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - path: env/pgadmin.env
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+  frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    env_file:
+      - env/db.env
+    command: "bun run dev"
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./server
+          target: /src/server
+          ignore:
+            - node_modules
+        - action: sync
+          path: ./app.vue
+          target: /src/app.vue
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: package.json
+
+volumes:
+  db:
+  pgadmin:
