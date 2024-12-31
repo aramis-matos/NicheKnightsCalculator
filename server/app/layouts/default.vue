@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-100" data-theme="coffee">
+  <div class="bg-base-100 w-screen h-screen" data-theme="coffee">
     <nav>
       <ul>
         <li>
@@ -10,6 +10,12 @@
         </li>
       </ul>
     </nav>
-    <slot />
+    <slot class="" />
   </div>
 </template>
+
+<script setup lang="ts">
+useHead({
+  titleTemplate: "%s - NicheKnights"
+})
+</script>

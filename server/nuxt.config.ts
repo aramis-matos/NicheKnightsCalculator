@@ -1,15 +1,25 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
   future: {
-    compatibilityVersion: 4
+    compatibilityVersion: 4,
   },
 
-  modules: ['@nuxtjs/tailwindcss', '@nuxt/eslint'],
+  modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxtjs/apollo"],
 
   tailwindcss: {
-    configPath: "@@/tailwind.config.ts"
-  }
-})
+    configPath: "@/assets/tailwind.config.ts",
+    cssPath: "@/assets/tailwind.css",
+  },
+
+  apollo: {
+    autoImports: true,
+    clients: {
+      default: {
+        httpEndpoint: "http://localhost:3000/api/graphql",
+      },
+    },
+  },
+});

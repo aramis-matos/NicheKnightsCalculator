@@ -3,3 +3,6 @@
         Hello from the main no you!!!?
     </div>
 </template>
+
+<script lang="ts">
+</script>
