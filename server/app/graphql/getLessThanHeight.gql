@@ -6,3 +6,21 @@ query charactersLessThanHeight($height: Int = 135) {
     }
   }
 }
+
+query allRaceCharacter($race: String) {
+  allRaceCharacter(search: $race) {
+    nodes {
+      id
+      name
+    }
+  }
+}
+
+query allCharacter {
+  allCharacters {
+    nodes {
+      id
+      name
+    }
+  }
+}
