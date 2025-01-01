@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
-    "query charactersLessThanHeigh($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}": types.CharactersLessThanHeighDocument,
+    "query charactersLessThanHeight($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}": types.CharactersLessThanHeightDocument,
 };
 
 /**
@@ -34,7 +34,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query charactersLessThanHeigh($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}"): (typeof documents)["query charactersLessThanHeigh($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}"];
+export function graphql(source: "query charactersLessThanHeight($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}"): (typeof documents)["query charactersLessThanHeight($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

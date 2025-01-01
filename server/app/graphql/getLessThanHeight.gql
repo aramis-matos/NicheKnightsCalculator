@@ -1,4 +1,4 @@
-query charactersLessThanHeigh($height: Int = 135) {
+query charactersLessThanHeight($height: Int = 135) {
   allHeightCharacter(charHeight: $height) {
     nodes {
       id

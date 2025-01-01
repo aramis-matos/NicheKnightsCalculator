@@ -1932,12 +1932,12 @@ export type UpdateRacePayloadRaceEdgeArgs = {
   orderBy?: Array<RaceOrderBy>;
 };
 
-export type CharactersLessThanHeighQueryVariables = Exact<{
+export type CharactersLessThanHeightQueryVariables = Exact<{
   height?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type CharactersLessThanHeighQuery = { __typename?: 'Query', allHeightCharacter?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', id: string, name: string } | null> } | null };
+export type CharactersLessThanHeightQuery = { __typename?: 'Query', allHeightCharacter?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', id: string, name: string } | null> } | null };
 
 
-export const CharactersLessThanHeighDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"charactersLessThanHeigh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"height"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"135"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allHeightCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"charHeight"},"value":{"kind":"Variable","name":{"kind":"Name","value":"height"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CharactersLessThanHeighQuery, CharactersLessThanHeighQueryVariables>;
+export const CharactersLessThanHeightDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"charactersLessThanHeight"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"height"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"135"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allHeightCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"charHeight"},"value":{"kind":"Variable","name":{"kind":"Name","value":"height"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CharactersLessThanHeightQuery, CharactersLessThanHeightQueryVariables>;

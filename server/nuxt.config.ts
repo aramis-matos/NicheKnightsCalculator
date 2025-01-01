@@ -7,19 +7,19 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
-  modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxtjs/apollo"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxt/eslint",
+    "nuxt-graphql-client",
+  ],
 
   tailwindcss: {
     configPath: "@/assets/tailwind.config.ts",
     cssPath: "@/assets/tailwind.css",
   },
 
-  apollo: {
-    autoImports: true,
-    clients: {
-      default: {
-        httpEndpoint: "http://localhost:3000/api/graphql",
-      },
-    },
-  },
+  'graphql-client': {
+    codegen: false
+  }
+
 });
