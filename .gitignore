@@ -24,5 +24,6 @@ logs
 !.env.example
 env
 
-# Dev toold
+# Dev tools
 .vscode
+db
