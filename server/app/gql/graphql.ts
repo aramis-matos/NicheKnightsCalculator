@@ -73,10 +73,65 @@ export enum ArtistOrderBy {
   RowIdDesc = 'ROW_ID_DESC'
 }
 
+export type Branch = Node & {
+  __typename?: 'Branch';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['BigInt']['output'];
+};
+
+/** A condition to be used against `Branch` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type BranchCondition = {
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
+/** A connection to a list of `Branch` values. */
+export type BranchConnection = {
+  __typename?: 'BranchConnection';
+  /** A list of edges which contains the `Branch` and cursor to aid in pagination. */
+  edges: Array<Maybe<BranchEdge>>;
+  /** A list of `Branch` objects. */
+  nodes: Array<Maybe<Branch>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Branch` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A `Branch` edge in the connection. */
+export type BranchEdge = {
+  __typename?: 'BranchEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Branch` at the end of the edge. */
+  node?: Maybe<Branch>;
+};
+
+/** Methods to use when ordering `Branch`. */
+export enum BranchOrderBy {
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC'
+}
+
 export type Character = Node & {
   __typename?: 'Character';
+  /** Reads a single `Branch` that is related to this `Character`. */
+  branchByBranchId?: Maybe<Branch>;
+  branchId: Scalars['BigInt']['output'];
   /** Reads and enables pagination through a set of `CharacterArtist`. */
   characterArtistsByCharacterId: CharacterArtistConnection;
+  /** Reads a single `Class` that is related to this `Character`. */
+  classByClassId?: Maybe<Class>;
+  classId: Scalars['BigInt']['output'];
   gender: Scalars['String']['output'];
   height: Scalars['Int']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -192,6 +247,55 @@ export type CharacterEdge = {
 
 /** Methods to use when ordering `Character`. */
 export enum CharacterOrderBy {
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC'
+}
+
+export type Class = Node & {
+  __typename?: 'Class';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['BigInt']['output'];
+};
+
+/** A condition to be used against `Class` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type ClassCondition = {
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
+/** A connection to a list of `Class` values. */
+export type ClassConnection = {
+  __typename?: 'ClassConnection';
+  /** A list of edges which contains the `Class` and cursor to aid in pagination. */
+  edges: Array<Maybe<ClassEdge>>;
+  /** A list of `Class` objects. */
+  nodes: Array<Maybe<Class>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Class` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A `Class` edge in the connection. */
+export type ClassEdge = {
+  __typename?: 'ClassEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Class` at the end of the edge. */
+  node?: Maybe<Class>;
+};
+
+/** Methods to use when ordering `Class`. */
+export enum ClassOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -331,10 +435,18 @@ export type Query = Node & {
   allArtistCharacters?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Artist`. */
   allArtists?: Maybe<ArtistConnection>;
+  /** Reads and enables pagination through a set of `Character`. */
+  allBranchCharacter?: Maybe<CharacterConnection>;
+  /** Reads and enables pagination through a set of `Branch`. */
+  allBranches?: Maybe<BranchConnection>;
   /** Reads and enables pagination through a set of `CharacterArtist`. */
   allCharacterArtists?: Maybe<CharacterArtistConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allCharacters?: Maybe<CharacterConnection>;
+  /** Reads and enables pagination through a set of `Character`. */
+  allClassCharacter?: Maybe<CharacterConnection>;
+  /** Reads and enables pagination through a set of `Class`. */
+  allClasses?: Maybe<ClassConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allHeightCharacter?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Character`. */
@@ -342,7 +454,7 @@ export type Query = Node & {
   /** Reads and enables pagination through a set of `Infection`. */
   allInfections?: Maybe<InfectionConnection>;
   /** Reads and enables pagination through a set of `Character`. */
-  allPlaceOfBirthCharacters?: Maybe<CharacterConnection>;
+  allPlaceOfBirthCharacter?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `PlaceOfBirth`. */
   allPlaceOfBirths?: Maybe<PlaceOfBirthConnection>;
   /** Reads and enables pagination through a set of `Character`. */
@@ -355,6 +467,12 @@ export type Query = Node & {
   artistByName?: Maybe<Artist>;
   /** Get a single `Artist`. */
   artistByRowId?: Maybe<Artist>;
+  /** Reads a single `Branch` using its globally unique `ID`. */
+  branch?: Maybe<Branch>;
+  /** Get a single `Branch`. */
+  branchByName?: Maybe<Branch>;
+  /** Get a single `Branch`. */
+  branchByRowId?: Maybe<Branch>;
   /** Reads a single `Character` using its globally unique `ID`. */
   character?: Maybe<Character>;
   /** Reads a single `CharacterArtist` using its globally unique `ID`. */
@@ -365,6 +483,12 @@ export type Query = Node & {
   characterByName?: Maybe<Character>;
   /** Get a single `Character`. */
   characterByRowId?: Maybe<Character>;
+  /** Reads a single `Class` using its globally unique `ID`. */
+  class?: Maybe<Class>;
+  /** Get a single `Class`. */
+  classByName?: Maybe<Class>;
+  /** Get a single `Class`. */
+  classByRowId?: Maybe<Class>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Reads a single `Infection` using its globally unique `ID`. */
@@ -417,6 +541,27 @@ export type QueryAllArtistsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryAllBranchCharacterArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllBranchesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<BranchCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BranchOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryAllCharacterArtistsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -437,6 +582,27 @@ export type QueryAllCharactersArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CharacterOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllClassCharacterArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllClassesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ClassCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ClassOrderBy>>;
 };
 
 
@@ -471,7 +637,7 @@ export type QueryAllInfectionsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryAllPlaceOfBirthCharactersArgs = {
+export type QueryAllPlaceOfBirthCharacterArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -531,6 +697,24 @@ export type QueryArtistByRowIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryBranchArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryBranchByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryBranchByRowIdArgs = {
+  rowId: Scalars['BigInt']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryCharacterArgs = {
   id: Scalars['ID']['input'];
 };
@@ -557,6 +741,24 @@ export type QueryCharacterByNameArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryCharacterByRowIdArgs = {
+  rowId: Scalars['BigInt']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryClassArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryClassByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryClassByRowIdArgs = {
   rowId: Scalars['BigInt']['input'];
 };
 
@@ -683,7 +885,9 @@ export type AllRaceCharacterQueryVariables = Exact<{
 
 export type AllRaceCharacterQuery = { __typename?: 'Query', allRaceCharacter?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', id: string, name: string } | null> } | null };
 
-export type AllCharacterQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllCharacterQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
 export type AllCharacterQuery = { __typename?: 'Query', allCharacters?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', id: string, name: string } | null> } | null };
@@ -691,4 +895,4 @@ export type AllCharacterQuery = { __typename?: 'Query', allCharacters?: { __type
 
 export const CharactersLessThanHeightDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"charactersLessThanHeight"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"height"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"135"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allHeightCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"charHeight"},"value":{"kind":"Variable","name":{"kind":"Name","value":"height"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CharactersLessThanHeightQuery, CharactersLessThanHeightQueryVariables>;
 export const AllRaceCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allRaceCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"race"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allRaceCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"race"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllRaceCharacterQuery, AllRaceCharacterQueryVariables>;
-export const AllCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCharacter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharacters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllCharacterQuery, AllCharacterQueryVariables>;
+export const AllCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharacters"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"condition"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllCharacterQuery, AllCharacterQueryVariables>;

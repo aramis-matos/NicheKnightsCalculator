@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-100 w-screen h-screen" data-theme="coffee">
+  <div class="bg-base-100 size-full" data-theme="coffee">
     <nav>
       <ul>
         <li>
@@ -19,3 +19,13 @@ useHead({
   titleTemplate: "%s - NicheKnights"
 })
 </script>
+
+<style>
+body, html {
+  @apply size-full overflow-hidden
+}
+
+body > div {
+  @apply size-full
+}
+</style>

@@ -5,11 +5,13 @@
       <li :key="value?.id">{{ value?.name }}</li>
     </ul>
   </div>
+  <div class="flex justify-center items-center w-full max-h-80 overflow-hidden">
+    <CharacterSearch />
+  </div>
 </template>
 
 <script setup lang="ts">
 import type {
-  AllCharacterQuery,
   CharactersLessThanHeightQuery,
   CharactersLessThanHeightQueryVariables,
 } from "~/gql/graphql";
@@ -17,11 +19,9 @@ import type {
 const {
   data: {
     value: { allHeightCharacter },
-  },
-  status
+  }
 } = await useAsyncGqlWithTypes<
   CharactersLessThanHeightQuery,
   CharactersLessThanHeightQueryVariables
 >("charactersLessThanHeight", { height: 130 });
-
 </script>
