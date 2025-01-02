@@ -5,7 +5,7 @@
       <li :key="value?.id">{{ value?.name }}</li>
     </ul>
   </div>
-  <div class="flex justify-center items-center w-full max-h-80 overflow-hidden">
+  <div class="flex justify-center items-center w-1/2 ">
     <CharacterSearch />
   </div>
 </template>

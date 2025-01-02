@@ -23,6 +23,9 @@ query allCharacter($search: String) {
     nodes {
       id
       name
+      classByClassId {
+        name
+      }
     }
   }
 }
