@@ -46,7 +46,7 @@ import type {
 } from "~/gql/graphql";
 import Icon from "./Icon.vue";
 
-const input = reactive<AllGeneralSearchQueryVariables>({ search: "" });
+const input = reactive<AllGeneralSearchQueryVariables>({});
 const allCharacters = reactive<AllGeneralSearchQuery>({});
 const timeoutId = ref<NodeJS.Timeout>();
 
@@ -55,13 +55,17 @@ const { useAsyncGql, useGql } = useGqlWithTypes<
   AllCharacterQueryVariables
 >("allGeneralSearch");
 
-allCharacters.allGeneralSearch = (await useAsyncGql({})).data.value.allGeneralSearch;
+allCharacters.allGeneralSearch = (
+  await useAsyncGql()
+).data.value.allGeneralSearch;
 
 watch(input, async () => {
   clearTimeout(timeoutId.value);
 
   const id = setTimeout(async () => {
-    const { allGeneralSearch: returnedCharacters } = await useGql(input.search === "" ? {} : input);
+    const { allGeneralSearch: returnedCharacters } = await useGql(
+      input.search === "" ? {} : input,
+    );
     allCharacters.allGeneralSearch = returnedCharacters;
   }, 500);
 

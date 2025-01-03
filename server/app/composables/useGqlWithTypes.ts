@@ -3,33 +3,33 @@ import type { Exact } from "~/gql/graphql";
 
 function useAsyncQglWithTypes<
   returnType extends Exact<{}> = never,
-  optionType extends Exact<{ [x: string]: unknown }> = {},
+  variablesType extends Exact<{ [x: string]: unknown }> = {},
 >(operation: GqlOps) {
-  return async (options: optionType) =>
-    await useAsyncGql<typeof operation, {}, optionType, returnType>({
+  return async (variables?: variablesType) =>
+    await useAsyncGql<typeof operation, {}, variablesType, returnType>({
       operation,
-      options,
+      variables,
     });
 }
 
 function useGqlWithTypesImp<
   returnType extends Exact<{}> = never,
-  optionType extends Exact<{ [x: string]: unknown }> = {},
+  variablesType extends Exact<{ [x: string]: unknown }> = {},
 >(operation: GqlOps) {
   const GqlInstance = useGql();
-  return async (options: optionType) =>
-    await GqlInstance<typeof operation, Promise<returnType>, optionType>({
+  return async (variables?: variablesType) =>
+    await GqlInstance<typeof operation, Promise<returnType>, variablesType>({
       operation,
-      variables: options,
+      variables,
     });
 }
 
 export function useGqlWithTypes<
   returnType extends Exact<{}> = never,
-  optionType extends Exact<{ [x: string]: unknown }> = {},
+  variablesType extends Exact<{ [x: string]: unknown }> = {},
 >(operation: GqlOps) {
   return {
-    useAsyncGql: useAsyncQglWithTypes<returnType, optionType>(operation),
-    useGql: useGqlWithTypesImp<returnType, optionType>(operation),
+    useAsyncGql: useAsyncQglWithTypes<returnType, variablesType>(operation),
+    useGql: useGqlWithTypesImp<returnType, variablesType>(operation),
   };
 }

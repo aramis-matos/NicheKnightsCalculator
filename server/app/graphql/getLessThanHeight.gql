@@ -29,3 +29,33 @@ query allCharacter($search: String) {
     }
   }
 }
+
+query getOperatorDetails{
+  characterByName(name: "Dorothy") {
+    name
+    gender
+    height
+    placeOfBirthByPlaceOfBirthId {
+      name
+    }
+    raceByRaceId {
+      name
+    }
+    infectionByInfectionId {
+      name
+    }
+    classByClassId {
+      name
+    }
+    branchByBranchId {
+      name
+    }
+    characterArtistsByCharacterId {
+      nodes {
+        artistByArtistId {
+          name
+        }
+      }
+    }
+  }
+}
