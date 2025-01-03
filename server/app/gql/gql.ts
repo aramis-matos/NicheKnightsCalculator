@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
+    "query allGeneralSearch($search: String) {\n  allGeneralSearch(search: $search) {\n    nodes {\n      id\n      name\n      classByClassId {\n        name\n      }\n    }\n  }\n}": types.AllGeneralSearchDocument,
     "query charactersLessThanHeight($height: Int = 135) {\n  allHeightCharacter(charHeight: $height) {\n    nodes {\n      id\n      name\n    }\n  }\n}\n\nquery allRaceCharacter($race: String) {\n  allRaceCharacter(search: $race) {\n    nodes {\n      id\n      name\n    }\n  }\n}\n\nquery allCharacter($search: String) {\n  allCharacters(condition: {name: $search}) {\n    nodes {\n      id\n      name\n      classByClassId {\n        name\n      }\n    }\n  }\n}": types.CharactersLessThanHeightDocument,
 };
 
@@ -31,6 +32,10 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query allGeneralSearch($search: String) {\n  allGeneralSearch(search: $search) {\n    nodes {\n      id\n      name\n      classByClassId {\n        name\n      }\n    }\n  }\n}"): (typeof documents)["query allGeneralSearch($search: String) {\n  allGeneralSearch(search: $search) {\n    nodes {\n      id\n      name\n      classByClassId {\n        name\n      }\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

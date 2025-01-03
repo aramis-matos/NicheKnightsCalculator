@@ -1,27 +1,9 @@
 <template>
-  <div class="bg-slate-400">Hello from the main no you!!!?</div>
-  <div>
-    <ul v-for="value in allHeightCharacter?.nodes">
-      <li :key="value?.id">{{ value?.name }}</li>
-    </ul>
-  </div>
-  <div class="flex justify-center items-center w-1/2 ">
-    <CharacterSearch />
+  <div class="flex w-full justify-center">
+    <div class="flex w-full max-w-4xl items-center justify-center">
+      <CharacterSearch />
+    </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import type {
-  CharactersLessThanHeightQuery,
-  CharactersLessThanHeightQueryVariables,
-} from "~/gql/graphql";
-
-const {
-  data: {
-    value: { allHeightCharacter },
-  }
-} = await useAsyncGqlWithTypes<
-  CharactersLessThanHeightQuery,
-  CharactersLessThanHeightQueryVariables
->("charactersLessThanHeight", { height: 130 });
-</script>
+<script setup lang="ts"></script>
