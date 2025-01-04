@@ -5,7 +5,7 @@ function useAsyncQglWithTypes<
   returnType extends Exact<{}> = never,
   variablesType extends Exact<{ [x: string]: unknown }> = {},
 >(operation: GqlOps) {
-  return async (variables?: variablesType) =>
+  return async (variables: variablesType) =>
     await useAsyncGql<typeof operation, {}, variablesType, returnType>({
       operation,
       variables,

@@ -14,7 +14,10 @@
 <script setup lang="ts">
 import { useSelectedCharacter } from "~/store/selectedCharacter";
 
+const { query } = useRoute();
 const store = useSelectedCharacter();
+
+store.setName((query.op as string | undefined) ?? "");
 </script>
 
 <style scoped>

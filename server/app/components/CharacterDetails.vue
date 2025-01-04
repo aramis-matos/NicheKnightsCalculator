@@ -4,31 +4,30 @@ import type {
   GetOperatorDetailsQueryVariables,
 } from "~/gql/graphql";
 import { useSelectedCharacter } from "~/store/selectedCharacter";
-import Index from "@/pages/operator/index.vue";
 
 const operator = reactive<GetOperatorDetailsQuery>({});
 const store = useSelectedCharacter();
-const { useAsyncGql } = useGqlWithTypes<
+const { useAsyncGql, useGql } = useGqlWithTypes<
   GetOperatorDetailsQuery,
   GetOperatorDetailsQueryVariables
 >("getOperatorDetails");
 
-async function setCharacter() {
-  return (await useAsyncGql({ name: store.name as string })).data.value
-    .characterByName;
-}
-operator.characterByName = await setCharacter();
+operator.characterByName = (
+  await useAsyncGql({ name: store.name as string })
+).data.value.characterByName;
 
 watch(
   () => store.name,
   async () => {
-    operator.characterByName = await setCharacter();
+    operator.characterByName = (
+      await useGql({ name: store.name as string })
+    ).characterByName;
   },
 );
 </script>
 
 <template>
-  <div class="w-full max-w-4xl" v-if="store.name !== ''">
+  <div class="w-full max-w-4xl">
     <div
       class="card bg-base-100 text-base-content shadow-base-content flex w-full items-center justify-center drop-shadow-xl"
     >

@@ -49,7 +49,7 @@ import type {
 
 const input = reactive<AllGeneralSearchQueryVariables>({});
 const allCharacters = reactive<AllGeneralSearchQuery>({});
-const timeoutId = ref<NodeJS.Timeout>();
+const timeoutId = ref(-1);
 const router = useRouter();
 const store = useSelectedCharacter();
 
@@ -59,7 +59,7 @@ const { useAsyncGql, useGql } = useGqlWithTypes<
 >("allGeneralSearch");
 
 allCharacters.allGeneralSearch = (
-  await useAsyncGql()
+  await useAsyncGql({})
 ).data.value.allGeneralSearch;
 
 watch(input, async () => {
@@ -72,7 +72,7 @@ watch(input, async () => {
     allCharacters.allGeneralSearch = returnedCharacters;
   }, 500);
 
-  timeoutId.value = id;
+  timeoutId.value = id as unknown as number;
 });
 
 function setName(name: string) {
