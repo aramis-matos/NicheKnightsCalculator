@@ -17,9 +17,7 @@ query allRaceCharacter($race: String) {
 }
 
 query allCharacter($search: String) {
-  allCharacters(condition:  {
-     name: $search
-  }) {
+  allCharacters(condition: { name: $search }) {
     nodes {
       id
       name
@@ -30,8 +28,8 @@ query allCharacter($search: String) {
   }
 }
 
-query getOperatorDetails{
-  characterByName(name: "Dorothy") {
+query getOperatorDetails($name: String!) {
+  characterByName(name: $name) {
     name
     gender
     height

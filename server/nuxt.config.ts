@@ -10,7 +10,8 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
     "nuxt-graphql-client",
-    "@nuxt/image"
+    "@nuxt/image",
+    "@pinia/nuxt",
   ],
 
   tailwindcss: {
@@ -18,8 +19,7 @@ export default defineNuxtConfig({
     cssPath: "@/assets/tailwind.css",
   },
 
-  'graphql-client': {
-    codegen: false
-  }
-
+  "graphql-client": {
+    codegen: false,
+  },
 });

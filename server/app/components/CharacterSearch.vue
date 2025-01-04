@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card bg-base-100 shadow-base-300 w-full gap-4 divide-y-2 px-4 pt-4 shadow-md"
+    class="card bg-base-100 shadow-base-300 w-full gap-4 divide-y-2 px-4 pt-4 drop-shadow-2xl"
   >
     <label class="input input-bordered flex items-center gap-1">
       <input
@@ -27,6 +27,7 @@
             class="hover:bg-base-300 flex w-full items-center justify-start gap-4 p-2 transition-all"
             :key="vals?.id"
             v-for="vals in allCharacters.allGeneralSearch?.nodes"
+            @click="setName(vals!.name)"
           >
             <Icon :class="vals?.classByClassId?.name as string" />
             <p class="text-left">{{ vals?.name }}</p>
@@ -39,20 +40,22 @@
 
 <script setup lang="ts">
 import { Search } from "lucide-vue-next";
+import Icon from "@/components/Icon.vue";
+import { useSelectedCharacter } from "~/store/selectedCharacter";
 import type {
-  AllCharacterQueryVariables,
   AllGeneralSearchQuery,
   AllGeneralSearchQueryVariables,
 } from "~/gql/graphql";
-import Icon from "./Icon.vue";
 
 const input = reactive<AllGeneralSearchQueryVariables>({});
 const allCharacters = reactive<AllGeneralSearchQuery>({});
 const timeoutId = ref<NodeJS.Timeout>();
+const router = useRouter();
+const store = useSelectedCharacter();
 
 const { useAsyncGql, useGql } = useGqlWithTypes<
   AllGeneralSearchQuery,
-  AllCharacterQueryVariables
+  AllGeneralSearchQueryVariables
 >("allGeneralSearch");
 
 allCharacters.allGeneralSearch = (
@@ -71,4 +74,11 @@ watch(input, async () => {
 
   timeoutId.value = id;
 });
+
+function setName(name: string) {
+  router.push({
+    query: { op: name },
+  });
+  store.setName(name);
+}
 </script>
