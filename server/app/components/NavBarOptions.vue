@@ -1,14 +1,24 @@
+<script setup lang="ts">
+import { Gem, Home, Notebook, UserSearch } from "lucide-vue-next";
+</script>
+
 <template>
-  <li>
-    <NuxtLink to="/" active-class="active">Home</NuxtLink>
-  </li>
-  <li>
-    <NuxtLink to="/operator" active-class="active">Operators</NuxtLink>
-  </li>
-  <li>
-    <NuxtLink to="/niche" active-class="active">Get Niche</NuxtLink>
-  </li>
-  <li>
-    <NuxtLink to="/about" active-class="active">About Us</NuxtLink>
-  </li>
+  <NavBarOption to="/" text="Home">
+    <Home class="icon" />
+  </NavBarOption>
+  <NavBarOption to="/operator" text="Operator">
+    <UserSearch class="icon" />
+  </NavBarOption>
+  <NavBarOption to="/niche" text="Niche">
+    <Gem class="icon" />
+  </NavBarOption>
+  <NavBarOption to="/about" text="About Us">
+    <Notebook class="icon" />
+  </NavBarOption>
 </template>
+
+<style scoped>
+.icon {
+  @apply stroke-base-content size-4;
+}
+</style>
