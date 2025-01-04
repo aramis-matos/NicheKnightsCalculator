@@ -1,31 +1,25 @@
 <template>
-  <div class="bg-base-100 size-full" data-theme="coffee">
+  <div class="bg-base-100 size-full" data-theme="synthwave">
     <nav>
-      <ul>
-        <li>
-          <NuxtLink to="/">Main</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/about">About</NuxtLink>
-        </li>
-      </ul>
+      <NavBar />
     </nav>
-    <slot class="" />
+    <slot />
   </div>
 </template>
 
 <script setup lang="ts">
 useHead({
-  titleTemplate: "%s - NicheKnights"
-})
+  titleTemplate: "%s - NicheKnights",
+});
 </script>
 
 <style>
-body, html {
-  @apply size-full overflow-hidden
+body,
+html {
+  @apply bg-base-100 h-screen w-screen;
 }
 
-body > div {
-  @apply size-full
+div#__nuxt {
+  @apply h-screen w-screen;
 }
 </style>

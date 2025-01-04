@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full flex-col justify-center gap-16">
+  <div class="bg-base-100 flex w-full flex-col justify-center gap-16">
     <div class="center">
       <div class="w-full max-w-4xl">
         <CharacterSearch />

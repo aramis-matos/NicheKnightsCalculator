@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card bg-base-100 shadow-base-300 w-full gap-4 divide-y-2 px-4 pt-4 drop-shadow-2xl"
+    class="card bg-base-100 shadow-base-300 w-full gap-4 divide-y-2 px-4 pt-4 drop-shadow-xl"
   >
     <label class="input input-bordered flex items-center gap-1">
       <input
@@ -22,9 +22,11 @@
       <div
         class="flex max-h-48 flex-col gap-2 overflow-x-hidden overflow-y-scroll"
       >
-        <div class="grid w-full grid-cols-3 gap-4">
+        <div
+          class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0"
+        >
           <div
-            class="hover:bg-base-300 flex w-full items-center justify-start gap-4 p-2 transition-all"
+            class="hover:bg-base-300 flex w-fit items-center justify-start gap-4 p-2 transition-all md:w-full"
             :key="vals?.id"
             v-for="vals in allCharacters.allGeneralSearch?.nodes"
             @click="setName(vals!.name)"
