@@ -29,7 +29,6 @@
     "@graphql-codegen/client-preset": "4.5.1",
     "@graphql-codegen/introspection": "4.0.3",
     "@iconify-json/material-symbols": "^1.2.12",
-    "daisyui": "^4.12.23",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9"
   },
