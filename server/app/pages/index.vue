@@ -1,3 +1,3 @@
 <template>
-    Hello
+  <USelect :options="['hello', 'hi']" />
 </template>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Home } from "lucide-vue-next";
-
 defineProps<{ to: string; text: string }>();
 </script>
 <template>

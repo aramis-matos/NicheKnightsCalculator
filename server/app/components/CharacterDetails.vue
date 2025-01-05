@@ -49,7 +49,7 @@ watch(
     >
       <div class="card-body w-full flex-col items-start">
         <div class="card-title flex gap-8">
-          <Icon :class="operator.characterByName?.classByClassId?.name" />
+          <CharIcon :class="operator.characterByName?.classByClassId?.name" />
           <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
         </div>
         <div class="flex w-full justify-between">
@@ -97,7 +97,7 @@ watch(
               </ul>
             </div>
           </div>
-          <NuxtImg src="/logo.png" class="w-1/2 max-w-48" />
+          <!-- <NuxtImg src="/logo.png" class="w-1/2 max-w-48" /> -->
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <NuxtImg :src="`${props.class}.webp`" class="size-5" />
+  <!-- <NuxtImg :src="`${props.class}.webp`" class="size-5" /> -->
 </template>
 
 <script setup lang="ts">

@@ -10,16 +10,4 @@ export default <Partial<Config>>{
       },
     },
   },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: [
-      "light",
-      "business",
-      "forest",
-      "aqua",
-      "sunset",
-      "coffee",
-      "synthwave",
-    ],
-  },
 };

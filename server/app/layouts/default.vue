@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-base-100 size-full" data-theme="synthwave">
+  <div class="size-full">
     <nav>
       <NavBar />
     </nav>
@@ -13,13 +13,4 @@ useHead({
 });
 </script>
 
-<style>
-body,
-html {
-  @apply bg-base-100 h-screen w-screen;
-}
-
-div#__nuxt {
-  @apply h-screen w-screen;
-}
-</style>
+<style></style>

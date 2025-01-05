@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Menu } from "lucide-vue-next";
+// import { Menu } from "lucide-vue-next";
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import { Menu } from "lucide-vue-next";
     <div class="navbar-start">
       <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-          <Menu class="size-8" />
+          <!-- <Menu class="size-8" /> -->
         </div>
         <ul
           tabindex="0"
@@ -17,7 +17,7 @@ import { Menu } from "lucide-vue-next";
         </ul>
       </div>
       <NuxtLink to="/" class="flex items-center gap-2">
-        <NuxtImg src="/logo.png" class="ml-4 size-16" />
+        <!-- <NuxtImg src="/logo.png" class="ml-4 size-16" /> -->
         <h1 class="text-base-content text-2xl">NicheKnights</h1>
       </NuxtLink>
     </div>

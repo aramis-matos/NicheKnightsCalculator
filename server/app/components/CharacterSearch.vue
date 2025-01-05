@@ -10,7 +10,7 @@
         id="search-character"
         v-model="input.search"
       />
-      <Search aria-label="search" />
+      <!-- <Search aria-label="search" /> -->
     </label>
     <div class="card-body w-full">
       <h2 class="card-title">
@@ -31,7 +31,7 @@
             v-for="vals in allCharacters.allGeneralSearch?.nodes"
             @click="setName(vals!.name)"
           >
-            <Icon :class="vals?.classByClassId?.name as string" />
+            <CharIcon :class="vals?.classByClassId?.name as string" />
             <p class="text-left">{{ vals?.name }}</p>
           </div>
         </div>
@@ -41,8 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { Search } from "lucide-vue-next";
-import Icon from "@/components/Icon.vue";
+// import { Search } from "lucide-vue-next";
 import { useSelectedCharacter } from "~/store/selectedCharacter";
 import type {
   AllGeneralSearchQuery,
