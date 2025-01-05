@@ -2,6 +2,7 @@
 import type { AllClassesQuery } from "~/gql/graphql";
 
 const classes = reactive<AllClassesQuery>({});
+const selectedClasses = ref<string[]>([]);
 
 const allClassesGql = useGqlWithTypes<AllClassesQuery>("allClasses");
 
@@ -12,10 +13,17 @@ classes.allClasses = (
 
 <template>
   <div class="flex w-full items-center justify-center">
-    <div class="grid w-full max-w-fit grid-cols-2 md:grid-cols-3">
-      <Select
-        title="Classes"
-        :options="classes.allClasses?.nodes.filter((elem) => elem !== null)"
+    <div class="grid w-full grid-cols-2 md:grid-cols-3">
+      <USelectMenu
+        class="w-3/4"
+        :options="
+          classes.allClasses?.nodes
+            .filter((elem) => elem !== null)
+            .map((elem) => elem.name)
+        "
+        v-model="selectedClasses"
+        multiple
+        placeholder="Select Classes"
       />
     </div>
   </div>

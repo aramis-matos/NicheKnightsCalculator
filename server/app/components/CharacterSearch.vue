@@ -1,47 +1,29 @@
 <template>
+  <label class="flex items-center gap-1">
+    <UInput class="mb-4 grow" placeholder="Search for Operator" id="search-character"
+      v-model="(input.search as string | undefined)" />
+  </label>
+  <UDivider class="py-4" label="Results" />
+  <h2 class="flex gap-2">
+    Operators Found:
+    <UBadge color="primary" variant="subtle">
+      {{ allCharacters.allGeneralSearch?.nodes.length }}
+    </UBadge>
+  </h2>
   <div
-    class="card bg-base-100 shadow-base-300 w-full gap-4 divide-y-2 px-4 pt-4 drop-shadow-xl"
-  >
-    <label class="input input-bordered flex items-center gap-1">
-      <input
-        type="text"
-        class="grow"
-        placeholder="Search for Operator"
-        id="search-character"
-        v-model="input.search"
-      />
-      <!-- <Search aria-label="search" /> -->
-    </label>
-    <div class="card-body w-full">
-      <h2 class="card-title">
-        Operators Found:
-        <div class="badge badge-secondary">
-          {{ allCharacters.allGeneralSearch?.nodes.length }}
-        </div>
-      </h2>
-      <div
-        class="flex max-h-48 flex-col gap-2 overflow-x-hidden overflow-y-scroll"
-      >
-        <div
-          class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0"
-        >
-          <div
-            class="hover:bg-base-300 flex w-fit items-center justify-start gap-4 p-2 transition-all md:w-full"
-            :key="vals?.id"
-            v-for="vals in allCharacters.allGeneralSearch?.nodes"
-            @click="setName(vals!.name)"
-          >
-            <CharIcon :class="vals?.classByClassId?.name as string" />
-            <p class="text-left">{{ vals?.name }}</p>
-          </div>
-        </div>
-      </div>
+    class="flex max-h-48 md:max-h-96 flex-col gap-2 overflow-x-hidden overflow-y-scroll mt-4 drop-shadow-xl shadow-xl rounded-lg p-2">
+    <div class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0">
+      <button
+        class="hover:bg-primary hover:cursor-pointer flex w-fit items-center justify-start gap-4 p-2 transition-all md:w-full"
+        :key="vals?.id" v-for="vals in allCharacters.allGeneralSearch?.nodes" @click="setName(vals!.name)">
+        <CharIcon :class="(vals?.classByClassId?.name as string)" />
+        <p class="text-left">{{ vals?.name }}</p>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { Search } from "lucide-vue-next";
 import { useSelectedCharacter } from "~/store/selectedCharacter";
 import type {
   AllGeneralSearchQuery,

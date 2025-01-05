@@ -1,13 +1,16 @@
 <template>
-  <div class="bg-base-100 flex w-full flex-col justify-center gap-16">
-    <div class="center">
-      <div class="w-full max-w-4xl">
+
+  <div class="flex flex-col gap-4">
+    <UContainer class="w-full max-w-6xl">
+      <UCard>
         <CharacterSearch />
-      </div>
-    </div>
-    <div class="center">
-      <CharacterDetails v-if="store.name !== ''" />
-    </div>
+      </UCard>
+    </UContainer>
+    <UContainer v-if="store.name !== ''" class="w-full max-w-6xl">
+      <UCard>
+        <CharacterDetails />
+      </UCard>
+    </UContainer>
   </div>
 </template>
 

@@ -1,10 +1,8 @@
 <template>
-  <div class="size-full">
-    <nav>
-      <NavBar />
-    </nav>
+  <UContainer class="w-full">
+    <NavBar />
     <slot />
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">

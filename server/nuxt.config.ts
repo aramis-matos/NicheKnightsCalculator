@@ -7,7 +7,12 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
-  modules: ["nuxt-graphql-client", "@pinia/nuxt", "@nuxt/ui"],
+  modules: [
+    "nuxt-graphql-client",
+    "@pinia/nuxt",
+    "@nuxt/ui",
+    "@nuxt/image",
+  ],
 
   tailwindcss: {
     configPath: "@/assets/tailwind.config.ts",

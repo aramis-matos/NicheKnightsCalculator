@@ -43,63 +43,32 @@ watch(
 </script>
 
 <template>
-  <div class="w-full max-w-4xl">
-    <div
-      class="card bg-base-100 text-base-content shadow-base-content flex w-full items-center justify-center drop-shadow-xl"
-    >
-      <div class="card-body w-full flex-col items-start">
-        <div class="card-title flex gap-8">
-          <CharIcon :class="operator.characterByName?.classByClassId?.name" />
-          <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
-        </div>
-        <div class="flex w-full justify-between">
-          <div class="flex w-1/2 flex-col">
-            <Attribute
-              attr="Class"
-              :val="operator.characterByName?.classByClassId?.name"
-            />
-            <Attribute
-              attr="Branch"
-              :val="operator.characterByName?.branchByBranchId?.name"
-            />
-            <Attribute
-              attr="Gender"
-              :val="operator.characterByName?.genderByGenderId?.name"
-            />
-            <Attribute
-              attr="Height"
-              :val="`${operator.characterByName?.height.toString()} cm`"
-            />
-            <Attribute
-              attr="Place of Birth"
-              :val="
-                operator.characterByName?.placeOfBirthByPlaceOfBirthId?.name
-              "
-            />
-            <Attribute
-              attr="Race"
-              :val="operator.characterByName?.raceByRaceId?.name"
-            />
-            <Attribute
-              attr="Infection Status"
-              :val="operator.characterByName?.infectionByInfectionId?.name"
-            />
+  <div class="flex gap-8 items-center pb-4">
+    <NuxtImg :src="`/${operator.characterByName?.classByClassId?.name}.webp`" class="size-10" />
+    <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
+  </div>
+  <div class="flex w-full justify-between items-center">
+    <div class="flex w-1/2 flex-col">
+      <Attribute attr="Class" :val="operator.characterByName?.classByClassId?.name" />
+      <Attribute attr="Branch" :val="operator.characterByName?.branchByBranchId?.name" />
+      <Attribute attr="Gender" :val="operator.characterByName?.genderByGenderId?.name" />
+      <Attribute attr="Height" :val="`${operator.characterByName?.height.toString()} cm`" />
+      <Attribute attr="Place of Birth" :val="operator.characterByName?.placeOfBirthByPlaceOfBirthId?.name
+        " />
+      <Attribute attr="Race" :val="operator.characterByName?.raceByRaceId?.name" />
+      <Attribute attr="Infection Status" :val="operator.characterByName?.infectionByInfectionId?.name" />
 
-            <div class="flex flex-col">
-              <p><span class="font-semibold">Artists</span>:</p>
-              <ul class="list-inside list-disc">
-                <li
-                  v-for="artist of artists.allCharacterArtist?.nodes"
-                  :key="artist?.id"
-                >
-                  {{ artist?.name }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- <NuxtImg src="/logo.png" class="w-1/2 max-w-48" /> -->
+      <div class="flex">
+        <div class="flex flex-col w-1/2">
+          <p><span class="font-semibold">Artists</span>:</p>
+          <ul class="list-inside list-disc">
+            <li v-for="artist of artists.allCharacterArtist?.nodes" :key="artist?.id">
+              {{ artist?.name }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
+    <NuxtImg src="/logo.png" class="w-1/2 max-w-48" />
   </div>
 </template>
