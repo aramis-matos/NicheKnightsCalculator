@@ -1,0 +1,8 @@
+query allBranches {
+  allBranches {
+    nodes {
+      id
+      name
+    }
+  }
+}

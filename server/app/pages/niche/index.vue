@@ -1,3 +1,3 @@
-<template>
-  <h1>Niche</h1>
-</template>
+<script setup lang="ts"></script>
+
+<template></template>

@@ -1,0 +1,8 @@
+query allArtists {
+  allArtists {
+    nodes {
+      rowId
+      name
+    }
+  }
+}

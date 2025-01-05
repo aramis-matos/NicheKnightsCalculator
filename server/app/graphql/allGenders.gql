@@ -1,0 +1,8 @@
+query allGenders {
+  allGenders {
+    nodes {
+      id
+      name
+    }
+  }
+}

@@ -1,0 +1,8 @@
+query allClasses {
+  allClasses {
+    nodes {
+      id
+      name
+    }
+  }
+}

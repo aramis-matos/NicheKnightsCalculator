@@ -1,0 +1,8 @@
+query allCharacterArtist($search: String!) {
+  allCharacterArtist(search: $search) {
+    nodes {
+      id
+      name
+    }
+  }
+}

@@ -1,27 +1,43 @@
 <script setup lang="ts">
-import type {
-  GetOperatorDetailsQuery,
-  GetOperatorDetailsQueryVariables,
+import {
+  type AllCharacterArtistQuery,
+  type AllCharacterArtistQueryVariables,
+  type GetOperatorDetailsQuery,
+  type GetOperatorDetailsQueryVariables,
 } from "~/gql/graphql";
 import { useSelectedCharacter } from "~/store/selectedCharacter";
 
 const operator = reactive<GetOperatorDetailsQuery>({});
+const artists = reactive<AllCharacterArtistQuery>({});
 const store = useSelectedCharacter();
 const { useAsyncGql, useGql } = useGqlWithTypes<
   GetOperatorDetailsQuery,
   GetOperatorDetailsQueryVariables
 >("getOperatorDetails");
 
+const { useGql: artGql, useAsyncGql: artAsyncGql } = useGqlWithTypes<
+  AllCharacterArtistQuery,
+  AllCharacterArtistQueryVariables
+>("allCharacterArtist");
+
 operator.characterByName = (
-  await useAsyncGql({ name: store.name as string })
+  await useAsyncGql({ name: store.name })
 ).data.value.characterByName;
+
+artists.allCharacterArtist = (
+  await artAsyncGql({ search: store.name })
+).data.value.allCharacterArtist;
 
 watch(
   () => store.name,
   async () => {
     operator.characterByName = (
-      await useGql({ name: store.name as string })
+      await useGql({ name: store.name })
     ).characterByName;
+
+    artists.allCharacterArtist = (
+      await artGql({ search: store.name })
+    ).allCharacterArtist;
   },
 );
 </script>
@@ -46,7 +62,10 @@ watch(
               attr="Branch"
               :val="operator.characterByName?.branchByBranchId?.name"
             />
-            <Attribute attr="Gender" :val="operator.characterByName?.gender" />
+            <Attribute
+              attr="Gender"
+              :val="operator.characterByName?.genderByGenderId?.name"
+            />
             <Attribute
               attr="Height"
               :val="`${operator.characterByName?.height.toString()} cm`"
@@ -65,6 +84,18 @@ watch(
               attr="Infection Status"
               :val="operator.characterByName?.infectionByInfectionId?.name"
             />
+
+            <div class="flex flex-col">
+              <p><span class="font-semibold">Artists</span>:</p>
+              <ul class="list-inside list-disc">
+                <li
+                  v-for="artist of artists.allCharacterArtist?.nodes"
+                  :key="artist?.id"
+                >
+                  {{ artist?.name }}
+                </li>
+              </ul>
+            </div>
           </div>
           <NuxtImg src="/logo.png" class="w-1/2 max-w-48" />
         </div>

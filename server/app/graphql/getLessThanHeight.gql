@@ -31,7 +31,6 @@ query allCharacter($search: String) {
 query getOperatorDetails($name: String!) {
   characterByName(name: $name) {
     name
-    gender
     height
     placeOfBirthByPlaceOfBirthId {
       name
@@ -54,6 +53,9 @@ query getOperatorDetails($name: String!) {
           name
         }
       }
+    }
+    genderByGenderId {
+      name
     }
   }
 }

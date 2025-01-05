@@ -132,7 +132,9 @@ export type Character = Node & {
   /** Reads a single `Class` that is related to this `Character`. */
   classByClassId?: Maybe<Class>;
   classId: Scalars['BigInt']['output'];
-  gender: Scalars['String']['output'];
+  /** Reads a single `Gender` that is related to this `Character`. */
+  genderByGenderId?: Maybe<Gender>;
+  genderId: Scalars['BigInt']['output'];
   height: Scalars['Int']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
@@ -305,6 +307,51 @@ export enum ClassOrderBy {
   RowIdDesc = 'ROW_ID_DESC'
 }
 
+export type Gender = Node & {
+  __typename?: 'Gender';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['BigInt']['output'];
+};
+
+/** A condition to be used against `Gender` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type GenderCondition = {
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
+/** A connection to a list of `Gender` values. */
+export type GenderConnection = {
+  __typename?: 'GenderConnection';
+  /** A list of edges which contains the `Gender` and cursor to aid in pagination. */
+  edges: Array<Maybe<GenderEdge>>;
+  /** A list of `Gender` objects. */
+  nodes: Array<Maybe<Gender>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Gender` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A `Gender` edge in the connection. */
+export type GenderEdge = {
+  __typename?: 'GenderEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Gender` at the end of the edge. */
+  node?: Maybe<Gender>;
+};
+
+/** Methods to use when ordering `Gender`. */
+export enum GenderOrderBy {
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC'
+}
+
 export type Infection = Node & {
   __typename?: 'Infection';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -439,6 +486,8 @@ export type Query = Node & {
   allBranchCharacter?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Branch`. */
   allBranches?: Maybe<BranchConnection>;
+  /** Reads and enables pagination through a set of `Artist`. */
+  allCharacterArtist?: Maybe<ArtistConnection>;
   /** Reads and enables pagination through a set of `CharacterArtist`. */
   allCharacterArtists?: Maybe<CharacterArtistConnection>;
   /** Reads and enables pagination through a set of `Character`. */
@@ -447,6 +496,8 @@ export type Query = Node & {
   allClassCharacter?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Class`. */
   allClasses?: Maybe<ClassConnection>;
+  /** Reads and enables pagination through a set of `Gender`. */
+  allGenders?: Maybe<GenderConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allGeneralSearch?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Character`. */
@@ -491,6 +542,10 @@ export type Query = Node & {
   classByName?: Maybe<Class>;
   /** Get a single `Class`. */
   classByRowId?: Maybe<Class>;
+  /** Reads a single `Gender` using its globally unique `ID`. */
+  gender?: Maybe<Gender>;
+  /** Get a single `Gender`. */
+  genderByRowId?: Maybe<Gender>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Reads a single `Infection` using its globally unique `ID`. */
@@ -564,6 +619,15 @@ export type QueryAllBranchesArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryAllCharacterArtistArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryAllCharacterArtistsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -605,6 +669,18 @@ export type QueryAllClassesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ClassOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllGendersArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<GenderCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<GenderOrderBy>>;
 };
 
 
@@ -775,6 +851,18 @@ export type QueryClassByRowIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryGenderArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGenderByRowIdArgs = {
+  rowId: Scalars['BigInt']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryInfectionArgs = {
   id: Scalars['ID']['input'];
 };
@@ -882,6 +970,33 @@ export enum RaceOrderBy {
   RowIdDesc = 'ROW_ID_DESC'
 }
 
+export type AllArtistsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllArtistsQuery = { __typename?: 'Query', allArtists?: { __typename?: 'ArtistConnection', nodes: Array<{ __typename?: 'Artist', rowId: any, name: string } | null> } | null };
+
+export type AllBranchesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllBranchesQuery = { __typename?: 'Query', allBranches?: { __typename?: 'BranchConnection', nodes: Array<{ __typename?: 'Branch', id: string, name: string } | null> } | null };
+
+export type AllCharacterArtistQueryVariables = Exact<{
+  search: Scalars['String']['input'];
+}>;
+
+
+export type AllCharacterArtistQuery = { __typename?: 'Query', allCharacterArtist?: { __typename?: 'ArtistConnection', nodes: Array<{ __typename?: 'Artist', id: string, name: string } | null> } | null };
+
+export type AllClassesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllClassesQuery = { __typename?: 'Query', allClasses?: { __typename?: 'ClassConnection', nodes: Array<{ __typename?: 'Class', id: string, name: string } | null> } | null };
+
+export type AllGendersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllGendersQuery = { __typename?: 'Query', allGenders?: { __typename?: 'GenderConnection', nodes: Array<{ __typename?: 'Gender', id: string, name: string } | null> } | null };
+
 export type AllGeneralSearchQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -915,11 +1030,16 @@ export type GetOperatorDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorDetailsQuery = { __typename?: 'Query', characterByName?: { __typename?: 'Character', name: string, gender: string, height: number, placeOfBirthByPlaceOfBirthId?: { __typename?: 'PlaceOfBirth', name: string } | null, raceByRaceId?: { __typename?: 'Race', name: string } | null, infectionByInfectionId?: { __typename?: 'Infection', name: string } | null, classByClassId?: { __typename?: 'Class', name: string } | null, branchByBranchId?: { __typename?: 'Branch', name: string } | null, characterArtistsByCharacterId: { __typename?: 'CharacterArtistConnection', nodes: Array<{ __typename?: 'CharacterArtist', artistByArtistId?: { __typename?: 'Artist', name: string } | null } | null> } } | null };
+export type GetOperatorDetailsQuery = { __typename?: 'Query', characterByName?: { __typename?: 'Character', name: string, height: number, placeOfBirthByPlaceOfBirthId?: { __typename?: 'PlaceOfBirth', name: string } | null, raceByRaceId?: { __typename?: 'Race', name: string } | null, infectionByInfectionId?: { __typename?: 'Infection', name: string } | null, classByClassId?: { __typename?: 'Class', name: string } | null, branchByBranchId?: { __typename?: 'Branch', name: string } | null, characterArtistsByCharacterId: { __typename?: 'CharacterArtistConnection', nodes: Array<{ __typename?: 'CharacterArtist', artistByArtistId?: { __typename?: 'Artist', name: string } | null } | null> }, genderByGenderId?: { __typename?: 'Gender', name: string } | null } | null };
 
 
+export const AllArtistsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allArtists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allArtists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rowId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllArtistsQuery, AllArtistsQueryVariables>;
+export const AllBranchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allBranches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allBranches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllBranchesQuery, AllBranchesQueryVariables>;
+export const AllCharacterArtistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCharacterArtist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharacterArtist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllCharacterArtistQuery, AllCharacterArtistQueryVariables>;
+export const AllClassesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allClasses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allClasses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllClassesQuery, AllClassesQueryVariables>;
+export const AllGendersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allGenders"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allGenders"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllGendersQuery, AllGendersQueryVariables>;
 export const AllGeneralSearchDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allGeneralSearch"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allGeneralSearch"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllGeneralSearchQuery, AllGeneralSearchQueryVariables>;
 export const CharactersLessThanHeightDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"charactersLessThanHeight"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"height"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"135"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allHeightCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"charHeight"},"value":{"kind":"Variable","name":{"kind":"Name","value":"height"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CharactersLessThanHeightQuery, CharactersLessThanHeightQueryVariables>;
 export const AllRaceCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allRaceCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"race"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allRaceCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"race"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllRaceCharacterQuery, AllRaceCharacterQueryVariables>;
 export const AllCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharacters"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"condition"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllCharacterQuery, AllCharacterQueryVariables>;
-export const GetOperatorDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getOperatorDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characterByName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"gender"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"placeOfBirthByPlaceOfBirthId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"raceByRaceId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"infectionByInfectionId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"branchByBranchId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"characterArtistsByCharacterId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"artistByArtistId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetOperatorDetailsQuery, GetOperatorDetailsQueryVariables>;
+export const GetOperatorDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getOperatorDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characterByName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"placeOfBirthByPlaceOfBirthId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"raceByRaceId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"infectionByInfectionId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"branchByBranchId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"characterArtistsByCharacterId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"artistByArtistId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"genderByGenderId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetOperatorDetailsQuery, GetOperatorDetailsQueryVariables>;
