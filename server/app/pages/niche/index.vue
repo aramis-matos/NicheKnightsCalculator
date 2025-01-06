@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { Operation } from "~/models/store";
 import { useNiche } from "~/store/niches";
 const store = useNiche();
 
 async function getNiches(): Promise<void> {
-  const vals = await store.getNiches(Operation.AND);
+  const vals = await store.getNiches();
   console.log(vals);
 }
 </script>
 
 <template>
   <UContainer class="w-full max-w-6xl">
-    <UCard class="flex flex-col gap-8">
+    <UCard class="flex w-full flex-col items-center gap-8">
       <NicheSelect
         query="allClasses"
         resKey="allClasses"

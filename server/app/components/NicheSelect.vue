@@ -6,32 +6,36 @@
     K extends keyof T
   "
 >
-import {useNiche} from "@/store/niches"
+import { useNiche } from "@/store/niches";
 import type { GqlOps } from "#gql";
 import type { Niches } from "~/models/store";
 
+const props = defineProps<{
+  query: GqlOps;
+  resKey: K;
+  title: string;
+  niche: keyof Niches;
+}>();
 
-const props = defineProps<{query: GqlOps, resKey: K, title: string, niche: keyof Niches}>()
-
-const res = reactive<{all: {nodes: {name: string}[]}}>({all: {nodes: []}});
+const res = reactive<{ all: { nodes: { name: string }[] } }>({
+  all: { nodes: [] },
+});
 const selectedValues = ref<string[]>([]);
-const store = useNiche()
+const store = useNiche();
 
 const allResGql = useGqlWithTypes<T>(props.query);
 
 //@ts-expect-error
-res.all = (
-  await allResGql.useAsyncGql({})
-).data.value[props.resKey];
+res.all = (await allResGql.useAsyncGql({})).data.value[props.resKey];
 
 watch(selectedValues, () => {
-  store.setValue(selectedValues.value,props.niche)
-})
+  store.setValue(selectedValues.value, props.niche);
+});
 </script>
 
 <template>
   <div class="flex w-full flex-col items-center justify-center">
-    <div class="flex w-1/2 flex-col">
+    <div class="flex w-full flex-col">
       <h1 class="pb-4 text-3xl">{{ props.title }}</h1>
       <USelectMenu
         class="w-full"
