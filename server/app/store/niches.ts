@@ -11,7 +11,9 @@ export const useNiche = defineStore("niche", {
     setValue(values: string[], key: keyof Niches) {
       this.$patch({ niches: { ...this.niches, [key]: values } });
     },
-    async getNiches(): Promise<{ name?: string; class?: string }[]> {
+    async getNiches(
+      operation: Operation,
+    ): Promise<{ name?: string; class?: string }[]> {
       const { useGql } = useGqlWithTypes<
         OrCharactersQuery,
         OrCharactersQueryVariables
@@ -55,7 +57,7 @@ export const useNiche = defineStore("niche", {
         })),
       );
 
-      if (this.operation === Operation.OR) {
+      if (operation === Operation.OR) {
         return useUnionWith(items.flat(), comparator);
       }
 
