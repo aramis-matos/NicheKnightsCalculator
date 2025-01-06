@@ -16,8 +16,8 @@
   const res = reactive<{ all: { nodes: { name: string }[] } }>({
     all: { nodes: [] },
   });
-  const selectedValues = ref<string[]>([]);
   const store = useNiche();
+  const selectedValues = ref<string[]>(store.niches[props.niche]);
 
   const allResGql = useGqlWithTypes<T>(props.query);
 
@@ -34,8 +34,8 @@
     <div class="flex w-full flex-col">
       <h1 class="pb-4 text-3xl">{{ props.title }}</h1>
       <USelectMenu searchable class="w-full" :options="res.all?.nodes
-          .filter((elem) => elem !== null)
-          .map((elem) => elem.name)
+        .filter((elem) => elem !== null)
+        .map((elem) => elem.name)
         " v-model="selectedValues" multiple placeholder="Select Classes">
         <template #label>
           <p v-if="selectedValues.length === 0">Select Classes</p>

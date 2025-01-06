@@ -1,8 +1,3 @@
-export enum Operation {
-  AND,
-  OR,
-}
-
 export type Niches = {
   placesOfBirth: string[];
   races: string[];
@@ -19,7 +14,7 @@ export type SelectedCharacterInitialState = {
 
 export type NicheInitialState = {
   niches: Niches;
-  operation: Operation;
+  isAnd: boolean;
 };
 
 export const initialSelectedCharacter: SelectedCharacterInitialState = {
@@ -34,7 +29,7 @@ export const initialNiche: NicheInitialState = {
     classes: [],
     branches: [],
     genders: [],
-    artists: []
+    artists: [],
   },
-  operation: Operation.OR,
+  isAnd: false,
 };

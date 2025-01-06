@@ -3,7 +3,7 @@ import type {
   OrCharactersQuery,
   OrCharactersQueryVariables,
 } from "~/gql/graphql";
-import { initialNiche, Operation, type Niches } from "~/models/store";
+import { initialNiche, type Niches } from "~/models/store";
 
 export const useNiche = defineStore("niche", {
   state: () => ({ ...initialNiche }),
@@ -11,9 +11,7 @@ export const useNiche = defineStore("niche", {
     setValue(values: string[], key: keyof Niches) {
       this.$patch({ niches: { ...this.niches, [key]: values } });
     },
-    async getNiches(
-      operation: Operation,
-    ): Promise<{ name?: string; class?: string }[]> {
+    async getNiches(): Promise<{ name?: string; class?: string }[]> {
       const { useGql } = useGqlWithTypes<
         OrCharactersQuery,
         OrCharactersQueryVariables
@@ -28,8 +26,6 @@ export const useNiche = defineStore("niche", {
         race: this.niches.races,
         artist: this.niches.artists,
       });
-
-      console.log(res);
 
       const vals = (Object.keys(res) as (keyof typeof res)[])
         .filter((elem) => elem !== "__typename")
@@ -57,7 +53,7 @@ export const useNiche = defineStore("niche", {
         })),
       );
 
-      if (operation === Operation.OR) {
+      if (!this.isAnd) {
         return useUnionWith(items.flat(), comparator);
       }
 

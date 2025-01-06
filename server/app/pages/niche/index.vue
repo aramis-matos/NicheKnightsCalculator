@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { Operation } from "~/models/store";
 import { useNiche } from "~/store/niches";
 const store = useNiche();
 
-const andOp = ref(false)
 const results = ref<{ name?: string, class?: string }[]>([])
 
 async function getNiches(): Promise<void> {
-  results.value = await store.getNiches(andOp.value === true ? Operation.AND : Operation.OR);
+  results.value = await store.getNiches();
 }
 
 </script>
@@ -17,7 +15,7 @@ async function getNiches(): Promise<void> {
     <UCard class="">
       <div class="flex justify-end items-center gap-4">
         <p class="font-semibold">Exclusive </p>
-        <UToggle color="primary" v-model="andOp" />
+        <UToggle color="primary" v-model="store.isAnd" />
       </div>
       <div class="grid grid-cols-1 gap-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -38,7 +36,7 @@ async function getNiches(): Promise<void> {
   </UContainer>
   <UContainer class="w-full max-w-6xl mt-8" v-if="results.length > 0">
     <UCard>
-      <ul class="grid grid-cols-1 md:grid-cols-3">
+      <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-4 md:gap-y-0 place-content-center">
         <li v-for="op of results" :key="`${op.name}+${op.class}`" class="flex gap-4">
           <CharIcon :class="op.class" />
           <p>{{ op.name }}</p>
