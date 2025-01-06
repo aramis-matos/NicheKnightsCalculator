@@ -36,7 +36,7 @@ async function getNiches(): Promise<void> {
   </UContainer>
   <UContainer class="w-full max-w-6xl mt-8" v-if="results.length > 0">
     <UCard>
-      <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-4 md:gap-y-0 place-content-center">
+      <ul class="grid grid-cols-2 md:grid-cols-3 gap-4 place-content-center max-h-96 overflow-y-auto">
         <li v-for="op of results" :key="`${op.name}+${op.class}`" class="flex gap-4">
           <CharIcon :class="op.class" />
           <p>{{ op.name }}</p>
