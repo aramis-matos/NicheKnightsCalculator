@@ -10,6 +10,7 @@ export type Niches = {
   classes: string[];
   branches: string[];
   genders: string[];
+  artists: string[];
 };
 
 export type SelectedCharacterInitialState = {
@@ -33,6 +34,7 @@ export const initialNiche: NicheInitialState = {
     classes: [],
     branches: [],
     genders: [],
+    artists: []
   },
   operation: Operation.OR,
 };

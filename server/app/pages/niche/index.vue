@@ -1,35 +1,60 @@
 <script setup lang="ts">
-import type { AllClassesQuery } from "~/gql/graphql";
+import { Operation } from "~/models/store";
+import { useNiche } from "~/store/niches";
+const store = useNiche();
 
-const classes = reactive<AllClassesQuery>({});
-const selectedClasses = ref<string[]>([]);
-
-const allClassesGql = useGqlWithTypes<AllClassesQuery>("allClasses");
-
-classes.allClasses = (
-  await allClassesGql.useAsyncGql({})
-).data.value.allClasses;
+async function getNiches(): Promise<void> {
+  const vals = await store.getNiches(Operation.AND);
+  console.log(vals);
+}
 </script>
 
 <template>
-  <div class="flex flex-col w-full items-center justify-center">
-    <div class="flex flex-col w-1/2">
-      <h1 class="text-3xl pb-4">Classes</h1>
-      <USelectMenu class="w-full" :options="classes.allClasses?.nodes
-        .filter((elem) => elem !== null)
-        .map((elem) => elem.name)
-        " v-model="selectedClasses" multiple placeholder="Select Classes">
-        <template #label>
-          <p v-if="selectedClasses.length === 0">Select Classes</p>
-          <div class="flex gap-4 w-full max-w-sm md:max-w-xl
-           h-fit flex-wrap pb-1" v-if="selectedClasses.length > 0">
-            <span v-for="value of selectedClasses" :key="value">
-              <UBadge color="primary">{{ value }}</UBadge>
-            </span>
-          </div>
-        </template>
-      </USelectMenu>
-    </div>
-
-  </div>
+  <UContainer class="w-full max-w-6xl">
+    <UCard class="flex flex-col gap-8">
+      <NicheSelect
+        query="allClasses"
+        resKey="allClasses"
+        title="Classes"
+        niche="classes"
+      />
+      <NicheSelect
+        query="allBranches"
+        resKey="allBranches"
+        title="Branches"
+        niche="branches"
+      />
+      <NicheSelect
+        query="allArtists"
+        resKey="allArtists"
+        title="Artists"
+        niche="artists"
+      />
+      <NicheSelect
+        query="allPlaceOfBirths"
+        resKey="allPlaceOfBirths"
+        title="Places of Birth"
+        niche="placesOfBirth"
+      />
+      <NicheSelect
+        query="allRaces"
+        resKey="allRaces"
+        title="Races"
+        niche="races"
+      />
+      <NicheSelect
+        query="allGenders"
+        resKey="allGenders"
+        title="Genders"
+        niche="genders"
+      />
+      <NicheSelect
+        query="allInfections"
+        resKey="allInfections"
+        title="Is Infected?"
+        niche="infections"
+      />
+      <button @click="getNiches">Calculate</button>
+    </UCard>
+  </UContainer>
 </template>

@@ -1,10 +1,11 @@
 query orCharacters(
-  $class: [String!]
-  $place: [String!]
+  $class: [String!]!
+  $place: [String!]!
   $race: [String!]
-  $infection: [String!]
-  $branch: [String!]
-  $gender: [String!]
+  $infection: [String!]!
+  $branch: [String!]!
+  $gender: [String!]!
+  $artist: [String!]!
 ) {
   orPlacesOfBirth(ops: $place) {
     nodes {
@@ -47,6 +48,14 @@ query orCharacters(
     }
   }
   orGenders(ops: $gender) {
+    nodes {
+      name
+      classByClassId {
+        name
+      }
+    }
+  }
+  orArtists(ops: $artist) {
     nodes {
       name
       classByClassId {

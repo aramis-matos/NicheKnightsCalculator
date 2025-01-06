@@ -8,8 +8,8 @@ import { initialNiche, Operation, type Niches } from "~/models/store";
 export const useNiche = defineStore("niche", {
   state: () => ({ ...initialNiche }),
   actions: {
-    setValue(value: string, key: keyof Niches) {
-      this.$patch({ [key]: [...this.niches[key], value] });
+    setValue(values: string[], key: keyof Niches) {
+      this.$patch({ niches: { ...this.niches, [key]: values } });
     },
     async getNiches(
       operation: Operation,
@@ -26,7 +26,10 @@ export const useNiche = defineStore("niche", {
         infection: this.niches.infections,
         place: this.niches.placesOfBirth,
         race: this.niches.races,
+        artist: this.niches.artists,
       });
+
+      console.log(res);
 
       const vals = (Object.keys(res) as (keyof typeof res)[])
         .filter((elem) => elem !== "__typename")
