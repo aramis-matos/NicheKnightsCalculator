@@ -5,7 +5,7 @@
 -- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
 -- Dumped by pg_dump version 17.2
 
--- Started on 2025-01-03 14:00:33 UTC
+-- Started on 2025-01-06 10:22:49 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -31,20 +31,20 @@ SET default_table_access_method = heap;
 CREATE TABLE public."character" (
     id bigint NOT NULL,
     name character varying NOT NULL,
-    gender character varying NOT NULL,
     height smallint NOT NULL,
     place_of_birth_id bigint DEFAULT 1 NOT NULL,
     race_id bigint DEFAULT 1 NOT NULL,
     infection_id bigint DEFAULT 1 NOT NULL,
     class_id bigint DEFAULT 1 NOT NULL,
-    branch_id bigint DEFAULT 1 NOT NULL
+    branch_id bigint DEFAULT 1 NOT NULL,
+    gender_id bigint DEFAULT 1 NOT NULL
 );
 
 
 ALTER TABLE public."character" OWNER TO root;
 
 --
--- TOC entry 232 (class 1255 OID 16395)
+-- TOC entry 234 (class 1255 OID 16395)
 -- Name: all_artist_characters(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -62,7 +62,7 @@ $$;
 ALTER FUNCTION public.all_artist_characters(search text) OWNER TO root;
 
 --
--- TOC entry 233 (class 1255 OID 16396)
+-- TOC entry 235 (class 1255 OID 16396)
 -- Name: all_branch_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -82,7 +82,41 @@ $$;
 ALTER FUNCTION public.all_branch_character(search text) OWNER TO root;
 
 --
--- TOC entry 234 (class 1255 OID 16397)
+-- TOC entry 218 (class 1259 OID 16403)
+-- Name: artist; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.artist (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.artist OWNER TO root;
+
+--
+-- TOC entry 241 (class 1255 OID 16522)
+-- Name: all_character_artist(text); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.all_character_artist(search text) RETURNS SETOF public.artist
+    LANGUAGE sql STABLE
+    AS $$
+SELECT
+    "artist"
+FROM
+    "character_artist"
+    JOIN "character" ON "character_artist".character_id = "character".id
+    JOIN "artist" ON "character_artist".artist_id = "artist".id
+WHERE
+    "character".name ILIKE search
+$$;
+
+
+ALTER FUNCTION public.all_character_artist(search text) OWNER TO root;
+
+--
+-- TOC entry 236 (class 1255 OID 16397)
 -- Name: all_class_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -102,7 +136,7 @@ $$;
 ALTER FUNCTION public.all_class_character(search text) OWNER TO root;
 
 --
--- TOC entry 250 (class 1255 OID 24711)
+-- TOC entry 244 (class 1255 OID 16398)
 -- Name: all_general_search(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -118,8 +152,9 @@ FROM
     JOIN "infection" ON "character".infection_id = "infection".id
     JOIN "class" ON "character".class_id = "class".id
     JOIN "branch" ON "character".branch_id = "branch".id
+	JOIN "gender" ON "character".gender_id = "gender".id
 WHERE search IS NULL OR "character".name ILIKE ('%' || search || '%')
-    OR "character".gender ILIKE (search || '%')
+    OR "gender".name ILIKE (search || '%')
     OR "place_of_birth".name ILIKE ('%' || search || '%')
     OR "race".name ILIKE ('%' || search || '%')
     OR "infection".name ILIKE (search || '%')
@@ -132,7 +167,7 @@ $$;
 ALTER FUNCTION public.all_general_search(search text) OWNER TO root;
 
 --
--- TOC entry 235 (class 1255 OID 16398)
+-- TOC entry 237 (class 1255 OID 16399)
 -- Name: all_height_character(integer); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -152,7 +187,7 @@ $$;
 ALTER FUNCTION public.all_height_character(char_height integer) OWNER TO root;
 
 --
--- TOC entry 236 (class 1255 OID 16399)
+-- TOC entry 238 (class 1255 OID 16400)
 -- Name: all_infection_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -169,7 +204,7 @@ $$;
 ALTER FUNCTION public.all_infection_character(search text) OWNER TO root;
 
 --
--- TOC entry 237 (class 1255 OID 16400)
+-- TOC entry 239 (class 1255 OID 16401)
 -- Name: all_place_of_birth_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -188,7 +223,7 @@ $$;
 ALTER FUNCTION public.all_place_of_birth_character(search text) OWNER TO root;
 
 --
--- TOC entry 238 (class 1255 OID 16401)
+-- TOC entry 240 (class 1255 OID 16402)
 -- Name: all_race_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -208,20 +243,91 @@ $$;
 ALTER FUNCTION public.all_race_character(search text) OWNER TO root;
 
 --
--- TOC entry 218 (class 1259 OID 16402)
--- Name: artist; Type: TABLE; Schema: public; Owner: root
+-- TOC entry 243 (class 1255 OID 16545)
+-- Name: or_branches(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
-CREATE TABLE public.artist (
-    id bigint NOT NULL,
-    name character varying NOT NULL
-);
+CREATE FUNCTION public.or_branches(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "branch" ON "character".branch_id = "branch".id WHERE "branch".name = ANY(ops) ORDER BY "character".name ASC
+$$;
 
 
-ALTER TABLE public.artist OWNER TO root;
+ALTER FUNCTION public.or_branches(ops text[]) OWNER TO root;
 
 --
--- TOC entry 219 (class 1259 OID 16407)
+-- TOC entry 242 (class 1255 OID 16544)
+-- Name: or_classes(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_classes(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "class" ON "character".class_id = "class".id WHERE "class".name = ANY(ops) ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_classes(ops text[]) OWNER TO root;
+
+--
+-- TOC entry 248 (class 1255 OID 16550)
+-- Name: or_genders(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_genders(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "gender" ON "character".gender_id = "gender".id WHERE "gender".name = ANY(ops) ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_genders(ops text[]) OWNER TO root;
+
+--
+-- TOC entry 247 (class 1255 OID 16549)
+-- Name: or_infections(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_infections(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "infection" ON "character".infection_id = "infection".id WHERE "infection".name = ANY(ops) ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_infections(ops text[]) OWNER TO root;
+
+--
+-- TOC entry 245 (class 1255 OID 16546)
+-- Name: or_places_of_birth(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_places_of_birth(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "place_of_birth" ON "character".place_of_birth_id = "place_of_birth".id WHERE "place_of_birth".name = ANY(ops) ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_places_of_birth(ops text[]) OWNER TO root;
+
+--
+-- TOC entry 246 (class 1255 OID 16547)
+-- Name: or_races(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_races(ops text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT "character" FROM "character" JOIN "race" ON "character".race_id = "race".id WHERE "race".name = ANY(ops) ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_races(ops text[]) OWNER TO root;
+
+--
+-- TOC entry 219 (class 1259 OID 16408)
 -- Name: artist_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -236,7 +342,7 @@ CREATE SEQUENCE public.artist_id_seq
 ALTER SEQUENCE public.artist_id_seq OWNER TO root;
 
 --
--- TOC entry 3468 (class 0 OID 0)
+-- TOC entry 3487 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: artist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -245,7 +351,7 @@ ALTER SEQUENCE public.artist_id_seq OWNED BY public.artist.id;
 
 
 --
--- TOC entry 220 (class 1259 OID 16408)
+-- TOC entry 220 (class 1259 OID 16409)
 -- Name: branch; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -258,7 +364,7 @@ CREATE TABLE public.branch (
 ALTER TABLE public.branch OWNER TO root;
 
 --
--- TOC entry 221 (class 1259 OID 16413)
+-- TOC entry 221 (class 1259 OID 16414)
 -- Name: branch_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -273,7 +379,7 @@ CREATE SEQUENCE public.branch_id_seq
 ALTER SEQUENCE public.branch_id_seq OWNER TO root;
 
 --
--- TOC entry 3469 (class 0 OID 0)
+-- TOC entry 3488 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: branch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -282,7 +388,7 @@ ALTER SEQUENCE public.branch_id_seq OWNED BY public.branch.id;
 
 
 --
--- TOC entry 222 (class 1259 OID 16414)
+-- TOC entry 222 (class 1259 OID 16415)
 -- Name: character_artist; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -295,7 +401,7 @@ CREATE TABLE public.character_artist (
 ALTER TABLE public.character_artist OWNER TO root;
 
 --
--- TOC entry 223 (class 1259 OID 16417)
+-- TOC entry 223 (class 1259 OID 16418)
 -- Name: character_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -310,7 +416,7 @@ CREATE SEQUENCE public.character_id_seq
 ALTER SEQUENCE public.character_id_seq OWNER TO root;
 
 --
--- TOC entry 3470 (class 0 OID 0)
+-- TOC entry 3489 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: character_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -319,7 +425,7 @@ ALTER SEQUENCE public.character_id_seq OWNED BY public."character".id;
 
 
 --
--- TOC entry 224 (class 1259 OID 16418)
+-- TOC entry 224 (class 1259 OID 16419)
 -- Name: class; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -332,7 +438,7 @@ CREATE TABLE public.class (
 ALTER TABLE public.class OWNER TO root;
 
 --
--- TOC entry 225 (class 1259 OID 16423)
+-- TOC entry 225 (class 1259 OID 16424)
 -- Name: class_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -347,7 +453,7 @@ CREATE SEQUENCE public.class_id_seq
 ALTER SEQUENCE public.class_id_seq OWNER TO root;
 
 --
--- TOC entry 3471 (class 0 OID 0)
+-- TOC entry 3490 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -356,7 +462,44 @@ ALTER SEQUENCE public.class_id_seq OWNED BY public.class.id;
 
 
 --
--- TOC entry 226 (class 1259 OID 16424)
+-- TOC entry 233 (class 1259 OID 16524)
+-- Name: gender; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.gender (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.gender OWNER TO root;
+
+--
+-- TOC entry 232 (class 1259 OID 16523)
+-- Name: gender_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.gender_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.gender_id_seq OWNER TO root;
+
+--
+-- TOC entry 3491 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: gender_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.gender_id_seq OWNED BY public.gender.id;
+
+
+--
+-- TOC entry 226 (class 1259 OID 16425)
 -- Name: infection; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -369,7 +512,7 @@ CREATE TABLE public.infection (
 ALTER TABLE public.infection OWNER TO root;
 
 --
--- TOC entry 227 (class 1259 OID 16429)
+-- TOC entry 227 (class 1259 OID 16430)
 -- Name: infection_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -384,7 +527,7 @@ CREATE SEQUENCE public.infection_id_seq
 ALTER SEQUENCE public.infection_id_seq OWNER TO root;
 
 --
--- TOC entry 3472 (class 0 OID 0)
+-- TOC entry 3492 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: infection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -393,7 +536,7 @@ ALTER SEQUENCE public.infection_id_seq OWNED BY public.infection.id;
 
 
 --
--- TOC entry 228 (class 1259 OID 16430)
+-- TOC entry 228 (class 1259 OID 16431)
 -- Name: place_of_birth; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -406,7 +549,7 @@ CREATE TABLE public.place_of_birth (
 ALTER TABLE public.place_of_birth OWNER TO root;
 
 --
--- TOC entry 229 (class 1259 OID 16435)
+-- TOC entry 229 (class 1259 OID 16436)
 -- Name: place_of_birth_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -421,7 +564,7 @@ CREATE SEQUENCE public.place_of_birth_id_seq
 ALTER SEQUENCE public.place_of_birth_id_seq OWNER TO root;
 
 --
--- TOC entry 3473 (class 0 OID 0)
+-- TOC entry 3493 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: place_of_birth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -430,7 +573,7 @@ ALTER SEQUENCE public.place_of_birth_id_seq OWNED BY public.place_of_birth.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 16436)
+-- TOC entry 230 (class 1259 OID 16437)
 -- Name: race; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -443,7 +586,7 @@ CREATE TABLE public.race (
 ALTER TABLE public.race OWNER TO root;
 
 --
--- TOC entry 231 (class 1259 OID 16441)
+-- TOC entry 231 (class 1259 OID 16442)
 -- Name: race_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -458,7 +601,7 @@ CREATE SEQUENCE public.race_id_seq
 ALTER SEQUENCE public.race_id_seq OWNER TO root;
 
 --
--- TOC entry 3474 (class 0 OID 0)
+-- TOC entry 3494 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: race_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -467,7 +610,7 @@ ALTER SEQUENCE public.race_id_seq OWNED BY public.race.id;
 
 
 --
--- TOC entry 3258 (class 2604 OID 16442)
+-- TOC entry 3271 (class 2604 OID 16443)
 -- Name: artist id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -475,7 +618,7 @@ ALTER TABLE ONLY public.artist ALTER COLUMN id SET DEFAULT nextval('public.artis
 
 
 --
--- TOC entry 3259 (class 2604 OID 16443)
+-- TOC entry 3272 (class 2604 OID 16444)
 -- Name: branch id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -483,7 +626,7 @@ ALTER TABLE ONLY public.branch ALTER COLUMN id SET DEFAULT nextval('public.branc
 
 
 --
--- TOC entry 3252 (class 2604 OID 16444)
+-- TOC entry 3264 (class 2604 OID 16445)
 -- Name: character id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -491,7 +634,7 @@ ALTER TABLE ONLY public."character" ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3260 (class 2604 OID 16445)
+-- TOC entry 3273 (class 2604 OID 16446)
 -- Name: class id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -499,7 +642,15 @@ ALTER TABLE ONLY public.class ALTER COLUMN id SET DEFAULT nextval('public.class_
 
 
 --
--- TOC entry 3261 (class 2604 OID 16446)
+-- TOC entry 3277 (class 2604 OID 16527)
+-- Name: gender id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.gender ALTER COLUMN id SET DEFAULT nextval('public.gender_id_seq'::regclass);
+
+
+--
+-- TOC entry 3274 (class 2604 OID 16447)
 -- Name: infection id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -507,7 +658,7 @@ ALTER TABLE ONLY public.infection ALTER COLUMN id SET DEFAULT nextval('public.in
 
 
 --
--- TOC entry 3262 (class 2604 OID 16447)
+-- TOC entry 3275 (class 2604 OID 16448)
 -- Name: place_of_birth id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -515,7 +666,7 @@ ALTER TABLE ONLY public.place_of_birth ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3263 (class 2604 OID 16448)
+-- TOC entry 3276 (class 2604 OID 16449)
 -- Name: race id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -523,7 +674,7 @@ ALTER TABLE ONLY public.race ALTER COLUMN id SET DEFAULT nextval('public.race_id
 
 
 --
--- TOC entry 3449 (class 0 OID 16402)
+-- TOC entry 3466 (class 0 OID 16403)
 -- Dependencies: 218
 -- Data for Name: artist; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -647,7 +798,7 @@ COPY public.artist (id, name) FROM stdin;
 
 
 --
--- TOC entry 3451 (class 0 OID 16408)
+-- TOC entry 3468 (class 0 OID 16409)
 -- Dependencies: 220
 -- Data for Name: branch; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -722,375 +873,375 @@ COPY public.branch (id, name) FROM stdin;
 
 
 --
--- TOC entry 3448 (class 0 OID 16385)
+-- TOC entry 3465 (class 0 OID 16385)
 -- Dependencies: 217
 -- Data for Name: character; Type: TABLE DATA; Schema: public; Owner: root
 --
 
-COPY public."character" (id, name, gender, height, place_of_birth_id, race_id, infection_id, class_id, branch_id) FROM stdin;
-43	Jessica the Liberated	Female	149	32	15	2	2	53
-44	Kal'tsit	Female	169	21	15	1	4	41
-45	Kirin R Yato	Female	161	9	26	1	6	23
-46	Lappland the Decadenza	Female	162	27	23	1	1	40
-47	Lee	Male	193	34	22	2	6	42
-48	Lessing	Male	175	16	7	2	3	20
-49	Lin	Female	166	17	44	2	1	45
-50	Ling	Female	166	34	37	2	7	60
-51	Logos	Male	178	12	34	1	1	15
-52	Lumen	Male	177	10	1	2	4	63
-53	Magallan	Female	160	4	21	2	7	60
-54	Marcille	Female	160	20	14	2	1	57
-55	Mizuki	Male	161	9	1	2	6	4
-56	Mostima	Female	170	15	37	2	1	57
-57	Mountain	Male	195	4	15	1	3	24
-58	Mudrock	Female	163	12	34	1	2	35
-59	Muelsyse	Female	169	28	14	2	8	62
-60	Młynar	Male	191	13	19	2	3	36
-61	Narantuya	Female	177	24	19	2	5	37
-62	Nearl the Radiant Knight	Female	171	13	19	2	3	20
-63	Nian	Female	165	34	37	3	2	49
-64	Nightingale	Female	164	12	34	1	4	43
-65	Nymph	Female	156	12	34	1	1	47
-66	Pallas	Female	162	18	16	1	3	34
-67	Passenger	Male	187	4	21	1	1	13
-68	Penance	Female	168	27	23	2	2	35
-69	Pepe	Female	155	24	15	2	3	22
-70	Phantom	Male	185	32	15	1	6	23
-71	Pozëmka	Female	177	31	23	2	5	29
-72	Qiubai	Female	178	34	13	2	3	38
-73	Ray	Female	170	22	8	1	5	32
-74	Reed the Flame Shadow	Female	172	32	10	1	4	33
-75	Rosa	Female	174	31	41	2	5	10
-76	Rosmontis	Female	142	4	15	1	5	25
-77	Saga	Female	164	9	27	2	8	46
-78	Saileach	Female	166	32	42	2	8	59
-79	Saria	Female	174	4	42	2	2	28
-80	Schwarz	Female	169	22	15	2	5	29
-81	Shining	Female	175	12	34	2	4	41
-82	Shu	Female	165	34	37	2	2	28
-83	Siege	Female	172	32	6	2	8	46
-84	Silence the Paradigmatic	Female	154	4	21	1	7	1
-85	SilverAsh	Male	192	14	15	2	3	38
-86	Skadi	Female	166	1	38	2	3	20
-87	Skadi the Corrupting Heart	Female	166	1	37	2	7	9
-88	Specter the Unchained	Female	165	1	1	1	6	19
-89	Stainless	Male	178	32	15	2	7	5
-90	Surtr	Female	162	29	34	1	3	7
-91	Suzuran	Female	137	9	43	1	7	18
-92	Swire the Elegant Wit	Female	163	17	15	2	6	42
-93	Texas the Omertosa	Female	161	4	23	2	6	23
-94	Thorns	Male	177	10	1	2	3	38
-95	Thorns the Lodestar	Male	177	10	1	2	6	3
-96	Typhon	Female	155	23	34	1	5	10
-97	Ulpianus	Male	189	1	1	2	3	16
-98	Vigil	Male	174	27	23	2	8	62
-99	Vina Victoria	Female	172	32	6	2	3	7
-100	Virtuosa	Female	168	15	33	2	7	52
-101	Viviana	Female	171	16	13	2	3	7
-102	Vulpisfoglia	Female	161	27	43	2	8	46
-103	W	Female	165	12	34	1	5	6
-104	Weedy	Female	155	10	1	2	6	50
-105	Wiš'adel	Female	165	12	34	1	5	25
-106	Zuo Le	Male	175	34	29	2	3	56
-107	Absinthe	Female	159	31	41	2	1	15
-108	Akafuyu	Female	176	9	1	2	3	56
-109	Almond	Female	140	4	27	1	6	31
-110	Amiya	Female	142	22	8	1	3	7
-111	Andreana	Female	166	10	1	2	5	17
-112	Aosta	Male	177	27	23	1	5	58
-113	April	Female	157	22	8	1	5	39
-114	Aroma	Female	157	27	23	1	1	11
-115	Asbestos	Female	156	22	35	1	2	8
-116	Ashlock	Female	164	13	44	1	2	26
-117	Astesia	Female	165	4	21	1	3	7
-118	Astgenne	Female	166	4	21	1	1	13
-119	Aurora	Female	169	14	41	1	2	21
-120	Ayerscarpe	Male	173	22	8	2	3	38
-121	Bassline	Male	160	16	23	2	2	28
-122	Beeswax	Female	157	24	7	2	1	45
-123	Bena	Female	143	32	7	2	6	19
-124	Bibeak	Female	161	23	21	1	3	61
-125	Bison	Male	163	17	16	2	2	49
-126	Blacknight	Female	166	22	35	1	8	62
-127	Blitz	Male	175	29	38	2	2	53
-128	Blue Poison	Female	157	29	4	2	5	39
-129	Bobbing	Male	178	4	27	2	7	52
-130	Breeze	Female	162	32	43	1	4	43
-131	Broca	Male	189	27	15	1	3	12
-132	Bryophyta	Male	178	25	21	1	3	34
-133	Cantabile	Female	169	3	21	1	8	2
-134	Catherine	Female	171	32	15	1	7	5
-135	Cement	Female	155	22	44	2	2	21
-136	Ceylon	Female	162	26	21	2	4	63
-137	Chiave	Male	182	27	43	1	8	46
-138	Chilchuck	Male	-1	6	17	2	8	2
-139	Cliffheart	Female	163	14	15	1	6	31
-140	Coldshot	Female	173	4	13	2	5	32
-141	Corroserum	Male	172	4	29	2	1	11
-142	Croissant	Female	163	18	16	2	2	49
-143	Czerny	Male	182	16	13	1	2	8
-144	Dagda	Female	155	32	15	2	3	24
-145	Delphine	Female	152	32	15	2	1	44
-146	Diamante	Male	180	16	7	1	1	47
-147	Doc	Male	177	29	38	2	3	34
-148	Elysium	Male	187	10	21	1	8	59
-149	Enforcer	Male	176	15	33	2	6	50
-150	Erato	Female	158	18	21	2	5	10
-151	Executor	Male	181	15	33	2	5	58
-152	FEater	Female	160	34	41	1	6	50
-153	Fang the Fire-sharpened	Female	162	13	19	1	8	14
-154	Figurino	Male	165	27	23	2	6	42
-155	Firewatch	Female	158	29	13	2	5	17
-156	Firewhistle	Female	166	22	21	2	2	26
-157	Flamebringer	Male	190	12	34	1	3	20
-158	Flint	Female	144	24	21	2	3	24
-159	Folinic	Female	164	31	15	1	4	41
-160	Franka	Female	163	4	43	1	3	20
-161	Frost	Female	172	29	38	2	6	64
-162	Fuze	Male	180	29	38	2	3	12
-163	Glaucus	Female	159	2	37	2	7	18
-164	Grain Buds	Female	153	34	21	2	7	18
-165	Grani	Female	154	32	19	2	8	14
-166	GreyThroat	Female	162	28	21	2	5	39
-167	Greyy the Lightningbearer	Male	169	3	27	1	5	25
-168	Harmonie	Female	160	32	15	2	1	44
-169	Harold	Male	190	32	15	2	4	65
-170	Heavyrain	Female	159	24	19	2	2	49
-171	Heidi	Female	165	32	15	2	7	9
-172	Hibiscus the Purifier	Female	160	32	34	1	4	33
-173	Highmore	Female	156	10	1	2	3	51
-174	Honeyberry	Female	155	22	44	2	4	65
-175	Hung	Male	183	17	27	2	2	28
-176	Iana	Female	157	29	38	2	6	19
-177	Indra	Female	173	29	15	1	3	24
-178	Insider	Male	184	15	33	2	5	39
-179	Iris	Female	147	32	15	2	1	44
-180	Istina	Female	156	31	41	2	7	18
-181	Jieyun	Female	164	34	2	1	5	6
-182	Kafka	Female	149	4	21	1	6	23
-183	Kazemaru	Female	157	9	15	2	6	19
-184	Kestrel	Female	170	24	21	1	8	46
-185	Kirara	Female	160	9	1	1	6	4
-186	Kjera	Female	165	14	37	2	1	40
-187	Kroos the Keen Glint	Female	161	22	8	1	5	39
-188	La Pluma	Female	166	3	21	2	3	51
-189	Laios	Male	185	20	36	2	3	20
-190	Lappland	Female	162	27	23	1	3	38
-191	Lava the Purgatory	Female	158	32	34	1	1	57
-192	Leizi	Female	171	34	20	2	1	13
-193	Leonhardt	Male	165	22	8	1	1	57
-194	Leto	Female	167	31	41	2	3	38
-195	Liskarm	Female	156	33	42	2	2	53
-196	Lucilla	Female	166	1	1	2	7	30
-197	Lunacub	Female	148	27	23	1	5	17
-198	Manticore	Female	155	24	24	1	6	4
-199	Mayer	Female	159	4	3	2	7	60
-200	Melanite	Female	155	4	29	1	5	29
-201	Meteorite	Female	170	12	34	1	5	6
-202	Minimalist	Male	130	5	11	1	1	40
-203	Mint	Female	155	32	15	1	1	45
-204	Mitm	Male	165	12	34	1	8	62
-205	Morgan	Female	165	32	15	2	3	20
-206	Mr. Nothing	Male	187	34	21	2	6	42
-207	Mulberry	Female	158	34	21	1	4	65
-208	Nearl	Female	171	13	19	1	2	28
-209	Nightmare	Female	156	32	15	1	1	15
-210	Nine-Colored Deer	Female	172	34	13	2	7	1
-211	Odda	Male	168	12	34	1	3	22
-212	Paprika	Female	155	4	34	1	4	13
-213	Papyrus	Female	160	24	15	2	4	13
-214	Philae	Female	168	24	34	1	2	48
-215	Platinum	Female	160	13	19	2	5	39
-216	Poncirus	Female	155	25	21	1	8	46
-217	Pramanix	Female	161	14	15	2	7	30
-218	Projekt Red	Female	162	28	23	2	6	23
-219	Provence	Female	162	27	23	1	5	29
-220	Proviso	Female	165	13	19	2	7	18
-221	Ptilopsis	Female	164	4	21	3	4	43
-222	Puzzle	Male	177	32	42	1	8	2
-223	Qanipalaat	Male	169	23	43	2	1	15
-224	Quercus	Female	174	32	15	2	7	1
-225	Rathalos S Noir Corne	Male	180	9	26	1	3	56
-226	Reed	Female	172	32	10	1	8	14
-227	Robin	Female	155	4	3	2	6	64
-228	Rockrock	Female	161	32	15	2	1	40
-229	Rose Salt	Female	146	10	29	1	4	43
-230	Sand Reckoner	Male	170	24	21	2	7	60
-231	Santalla	Female	170	23	15	1	1	57
-232	Savage	Female	160	22	8	2	3	12
-233	Scene	Female	154	24	30	1	7	60
-234	Senshi	Male	140	11	12	2	2	28
-235	Sesa	Male	189	24	42	2	5	6
-236	Shalem	Male	179	32	29	1	2	8
-237	Shamare	Female	138	27	43	1	7	30
-238	Sideroca	Female	164	18	16	2	3	7
-239	Silence	Female	154	4	21	1	4	41
-240	Skyfire	Female	162	32	15	2	1	57
-241	Snowsant	Female	155	17	21	2	6	31
-242	Sora	Female	155	30	40	2	7	9
-243	Specter	Female	162	1	37	3	3	12
-244	Spuria	Female	159	15	33	2	6	27
-245	Swire	Female	163	17	15	2	3	34
-246	Tachanka	Male	183	29	38	2	3	61
-247	Tecno	Female	130	3	11	1	1	54
-248	Tequila	Male	182	3	27	2	3	36
-249	Texas	Female	161	4	23	2	8	46
-250	Tin Man	Male	184	28	37	3	6	3
-251	Toddifons	Female	168	32	42	1	5	10
-252	Tomimi	Female	142	24	5	2	1	15
-253	Tsukinogi	Female	165	9	13	1	7	1
-254	Tuye	Female	153	24	16	1	4	41
-255	Underflow	Female	170	1	1	2	2	53
-256	Valarqvin	Female	188	23	34	1	7	52
-257	Vendela	Female	160	32	15	1	4	33
-258	Vulcan	Female	170	18	16	1	2	35
-259	Waai Fu	Female	162	34	15	2	6	23
-260	Wanqing	Male	170	34	16	2	8	59
-261	Warfarin	Female	157	12	34	2	4	41
-262	Warmy	Female	140	22	8	1	1	47
-263	Whislash	Female	165	13	19	2	3	34
-264	Whisperain	Female	169	10	1	2	4	63
-265	Wild Mane	Female	158	13	19	1	8	14
-266	Wind Chimes	Female	175	34	16	1	3	16
-267	Windflit	Male	180	4	27	2	7	5
-268	Zima	Female	162	31	41	2	8	46
-269	Pith	Female	165	32	21	1	1	57
-270	Sharp	Male	180	4	29	1	3	20
-271	Stormeye	Male	180	12	34	1	5	39
-272	Touch	Female	152	16	7	1	4	41
-273	Tulip	Female	177	10	29	1	8	46
-274	Aciddrop	Female	150	4	21	1	5	29
-275	Ambriel	Female	160	15	33	2	5	17
-276	Arene	Male	161	15	33	1	3	38
-277	Beanstalk	Female	155	4	32	2	8	62
-278	Beehunter	Female	163	31	41	1	3	24
-279	Bubble	Female	135	24	9	1	2	49
-280	Caper	Female	150	3	8	1	5	37
-281	Chestnut	Male	132	28	11	2	4	65
-282	Click	Female	144	28	44	2	1	40
-283	Contrail	Female	155	4	44	1	6	55
-284	Conviction	Conviction	145	18	39	1	3	20
-285	Courier	Male	177	14	18	2	8	46
-286	Cuora	Female	148	28	28	1	2	49
-287	Cutter	Female	155	4	43	1	3	61
-288	Deepcolor	Female	163	28	37	2	7	60
-289	Dobermann	Female	163	3	27	1	3	34
-290	Earthspirit	Female	161	16	7	1	7	18
-291	Estelle	Female	162	28	5	1	3	12
-292	Ethan	Male	163	29	35	1	6	4
-293	Frostleaf	Female	157	4	43	1	3	38
-3	Aak	Male	161	17	15	2	6	27
-4	Angelina	Female	162	8	43	1	7	18
-5	Archetto	Female	152	15	21	2	5	39
-6	Ascalon	Female	175	12	34	1	6	4
-7	Ash	Female	170	29	38	2	5	39
-8	Bagpipe	Female	167	32	42	2	8	14
-9	Blaze	Female	172	32	15	1	3	12
-10	Blemishine	Female	165	13	19	2	2	28
-11	Carnelian	Female	173	24	7	2	1	45
-12	Ceobe	Female	153	3	27	1	1	15
-13	Ch'en	Female	168	17	22	3	3	61
-14	Ch'en the Holungday	Female	168	17	22	1	5	58
-15	Chongyue	Male	188	34	37	2	3	24
-16	Civilight Eterna	Female	165	12	37	3	7	9
-17	Crownslayer	Female	161	31	32	1	6	23
-18	Degenbrecher	Female	182	16	7	2	3	61
-19	Dorothy	Female	170	4	44	2	6	64
-20	Dusk	Female	162	34	37	2	1	57
-21	Ebenholz	Male	173	16	7	1	1	44
-22	Ela	Female	173	29	38	2	6	64
-23	Eunectes	Female	171	24	29	1	2	21
-24	Executor the Ex Foedere	Male	181	15	33	2	3	51
-25	Exusiai	Female	159	15	33	2	5	39
-26	Eyjafjalla	Female	145	16	7	1	1	15
-27	Eyjafjalla the Hvít Aska	Female	153	16	7	1	4	65
-28	Fartooth	Female	155	13	21	1	5	17
-29	Fiammetta	Female	171	15	21	2	5	6
-30	Flametail	Female	159	13	44	1	8	46
-31	Gavial the Invincible	Female	163	24	5	1	3	12
-32	Gladiia	Female	181	1	37	2	6	31
-33	Gnosis	Male	188	14	21	2	7	30
-34	Goldenglow	Female	159	32	15	1	1	40
-35	Hellagur	Male	193	31	21	1	3	56
-36	Ho'olheyak	Female	171	4	37	2	1	15
-37	Hoederer	Male	185	12	34	1	3	16
-38	Horn	Female	168	32	23	2	2	26
-39	Hoshiguma	Female	184	9	26	2	2	49
-40	Ifrit	Female	159	29	34	3	1	11
-41	Ines	Female	168	12	37	1	8	2
-42	Irene	Female	156	10	21	2	3	61
-294	Gavial	Female	163	28	5	1	4	41
-295	Gitano	Female	171	23	13	1	1	57
-296	Gravel	Female	156	13	44	2	6	23
-297	Greyy	Male	163	3	27	1	1	57
-298	Gummy	Female	155	31	41	2	2	28
-299	Haze	Female	158	32	15	1	1	15
-300	Humus	Male	185	4	16	1	3	51
-301	Indigo	Female	167	10	29	2	1	44
-302	Jackie	Female	157	4	27	1	3	24
-303	Jaye	Male	174	17	41	2	6	42
-304	Jessica	Female	147	32	15	2	5	39
-305	Luo Xiaohei	Male	-1	29	15	2	3	38
-306	Lutonada	Female	159	3	44	1	2	35
-307	Matoimaru	Female	172	9	26	2	3	20
-308	Matterhorn	Male	182	14	16	2	2	49
-309	May	Female	151	32	21	2	5	39
-310	Meteor	Female	164	13	19	1	5	39
-311	Mousse	Female	154	32	15	1	3	7
-312	Myrrh	Female	143	29	43	2	4	41
-313	Myrtle	Female	131	29	11	2	8	59
-314	Perfumer	Female	158	18	43	1	4	43
-315	Pinecone	Female	148	4	21	2	5	58
-316	Podenco	Female	145	3	27	2	7	18
-317	Pudding	Female	156	4	1	3	1	13
-318	Purestream	Female	155	34	1	2	4	63
-319	Quartz	Female	173	4	23	2	3	16
-320	Roberta	Female	155	4	3	2	7	5
-321	Rope	Female	155	22	8	1	6	31
-322	Scavenger	Female	164	29	44	1	8	46
-323	Shaw	Female	135	17	44	2	6	50
-324	Shirayuki	Female	154	9	3	2	5	6
-325	Sussurro	Female	142	27	43	1	4	41
-326	Totter	Male	185	24	21	1	5	10
-327	Utage	Female	161	9	38	1	3	56
-328	Verdant	Male	163	32	29	1	6	19
-329	Vermeil	Female	153	29	43	1	5	39
-330	Vigna	Female	142	12	34	1	8	14
-331	Adnachiel	Male	171	15	33	1	5	39
-332	Ansel	Male	163	22	8	2	4	41
-333	Beagle	Female	154	3	27	1	2	49
-334	Cardigan	Female	156	16	27	2	2	49
-335	Catapult	Female	163	13	19	1	5	6
-336	Fang	Female	158	13	19	3	8	46
-337	Hibiscus	Female	153	32	34	1	4	41
-338	Kroos	Female	154	22	8	1	5	39
-339	Lava	Female	154	32	34	1	1	57
-340	Melantha	Female	161	32	15	1	3	20
-341	Midnight	Male	187	7	34	1	3	38
-342	Orchid	Female	164	4	21	1	7	18
-343	Plume	Female	158	15	21	2	8	14
-344	Popukar	Female	144	22	8	1	3	12
-345	Spot	Male	169	24	31	1	2	28
-346	Steward	Male	172	14	43	1	1	15
-347	Vanilla	Female	172	33	42	2	8	46
-348	12F	Male	181	29	35	2	1	57
-349	Durin	Female	131	28	11	2	1	15
-350	Noir Corne	Male	180	9	26	1	2	49
-351	Rangers	Male	179	28	35	2	5	39
-352	Yato	Female	161	9	26	1	8	46
-353	Castle-3	Male	167	19	25	3	3	20
-354	Friston-3	Male	145	19	25	3	2	49
-355	Justice Knight	Female	160	19	25	3	5	39
-356	Lancet-2	Female	149	19	25	3	4	41
-357	PhonoR-0	Female	160	19	25	3	7	52
-358	THRM-EX	Male	160	19	25	3	6	23
-359	Terra Research Commission	Unknown	-1	29	37	2	5	25
-360	U-Official	Female	159	28	44	2	7	9
+COPY public."character" (id, name, height, place_of_birth_id, race_id, infection_id, class_id, branch_id, gender_id) FROM stdin;
+43	Jessica the Liberated	149	32	15	2	2	53	4
+44	Kal'tsit	169	21	15	1	4	41	4
+45	Kirin R Yato	161	9	26	1	6	23	4
+46	Lappland the Decadenza	162	27	23	1	1	40	4
+47	Lee	193	34	22	2	6	42	3
+48	Lessing	175	16	7	2	3	20	3
+49	Lin	166	17	44	2	1	45	4
+50	Ling	166	34	37	2	7	60	4
+51	Logos	178	12	34	1	1	15	3
+52	Lumen	177	10	1	2	4	63	3
+53	Magallan	160	4	21	2	7	60	4
+54	Marcille	160	20	14	2	1	57	4
+55	Mizuki	161	9	1	2	6	4	3
+56	Mostima	170	15	37	2	1	57	4
+57	Mountain	195	4	15	1	3	24	3
+58	Mudrock	163	12	34	1	2	35	4
+59	Muelsyse	169	28	14	2	8	62	4
+60	Młynar	191	13	19	2	3	36	3
+61	Narantuya	177	24	19	2	5	37	4
+62	Nearl the Radiant Knight	171	13	19	2	3	20	4
+63	Nian	165	34	37	3	2	49	4
+64	Nightingale	164	12	34	1	4	43	4
+65	Nymph	156	12	34	1	1	47	4
+66	Pallas	162	18	16	1	3	34	4
+67	Passenger	187	4	21	1	1	13	3
+68	Penance	168	27	23	2	2	35	4
+69	Pepe	155	24	15	2	3	22	4
+70	Phantom	185	32	15	1	6	23	3
+71	Pozëmka	177	31	23	2	5	29	4
+72	Qiubai	178	34	13	2	3	38	4
+73	Ray	170	22	8	1	5	32	4
+74	Reed the Flame Shadow	172	32	10	1	4	33	4
+75	Rosa	174	31	41	2	5	10	4
+76	Rosmontis	142	4	15	1	5	25	4
+77	Saga	164	9	27	2	8	46	4
+78	Saileach	166	32	42	2	8	59	4
+79	Saria	174	4	42	2	2	28	4
+80	Schwarz	169	22	15	2	5	29	4
+81	Shining	175	12	34	2	4	41	4
+82	Shu	165	34	37	2	2	28	4
+83	Siege	172	32	6	2	8	46	4
+84	Silence the Paradigmatic	154	4	21	1	7	1	4
+85	SilverAsh	192	14	15	2	3	38	3
+86	Skadi	166	1	38	2	3	20	4
+87	Skadi the Corrupting Heart	166	1	37	2	7	9	4
+88	Specter the Unchained	165	1	1	1	6	19	4
+89	Stainless	178	32	15	2	7	5	3
+90	Surtr	162	29	34	1	3	7	4
+91	Suzuran	137	9	43	1	7	18	4
+92	Swire the Elegant Wit	163	17	15	2	6	42	4
+93	Texas the Omertosa	161	4	23	2	6	23	4
+94	Thorns	177	10	1	2	3	38	3
+95	Thorns the Lodestar	177	10	1	2	6	3	3
+96	Typhon	155	23	34	1	5	10	4
+97	Ulpianus	189	1	1	2	3	16	3
+98	Vigil	174	27	23	2	8	62	3
+99	Vina Victoria	172	32	6	2	3	7	4
+100	Virtuosa	168	15	33	2	7	52	4
+101	Viviana	171	16	13	2	3	7	4
+102	Vulpisfoglia	161	27	43	2	8	46	4
+103	W	165	12	34	1	5	6	4
+104	Weedy	155	10	1	2	6	50	4
+105	Wiš'adel	165	12	34	1	5	25	4
+106	Zuo Le	175	34	29	2	3	56	3
+107	Absinthe	159	31	41	2	1	15	4
+108	Akafuyu	176	9	1	2	3	56	4
+109	Almond	140	4	27	1	6	31	4
+110	Amiya	142	22	8	1	3	7	4
+111	Andreana	166	10	1	2	5	17	4
+112	Aosta	177	27	23	1	5	58	3
+113	April	157	22	8	1	5	39	4
+114	Aroma	157	27	23	1	1	11	4
+115	Asbestos	156	22	35	1	2	8	4
+116	Ashlock	164	13	44	1	2	26	4
+117	Astesia	165	4	21	1	3	7	4
+118	Astgenne	166	4	21	1	1	13	4
+119	Aurora	169	14	41	1	2	21	4
+120	Ayerscarpe	173	22	8	2	3	38	3
+121	Bassline	160	16	23	2	2	28	3
+122	Beeswax	157	24	7	2	1	45	4
+123	Bena	143	32	7	2	6	19	4
+124	Bibeak	161	23	21	1	3	61	4
+125	Bison	163	17	16	2	2	49	3
+126	Blacknight	166	22	35	1	8	62	4
+127	Blitz	175	29	38	2	2	53	3
+128	Blue Poison	157	29	4	2	5	39	4
+129	Bobbing	178	4	27	2	7	52	3
+130	Breeze	162	32	43	1	4	43	4
+131	Broca	189	27	15	1	3	12	3
+132	Bryophyta	178	25	21	1	3	34	3
+133	Cantabile	169	3	21	1	8	2	4
+134	Catherine	171	32	15	1	7	5	4
+135	Cement	155	22	44	2	2	21	4
+136	Ceylon	162	26	21	2	4	63	4
+137	Chiave	182	27	43	1	8	46	3
+138	Chilchuck	-1	6	17	2	8	2	3
+139	Cliffheart	163	14	15	1	6	31	4
+140	Coldshot	173	4	13	2	5	32	4
+141	Corroserum	172	4	29	2	1	11	3
+142	Croissant	163	18	16	2	2	49	4
+143	Czerny	182	16	13	1	2	8	3
+144	Dagda	155	32	15	2	3	24	4
+145	Delphine	152	32	15	2	1	44	4
+146	Diamante	180	16	7	1	1	47	3
+147	Doc	177	29	38	2	3	34	3
+148	Elysium	187	10	21	1	8	59	3
+149	Enforcer	176	15	33	2	6	50	3
+150	Erato	158	18	21	2	5	10	4
+151	Executor	181	15	33	2	5	58	3
+152	FEater	160	34	41	1	6	50	4
+153	Fang the Fire-sharpened	162	13	19	1	8	14	4
+154	Figurino	165	27	23	2	6	42	3
+155	Firewatch	158	29	13	2	5	17	4
+156	Firewhistle	166	22	21	2	2	26	4
+157	Flamebringer	190	12	34	1	3	20	3
+158	Flint	144	24	21	2	3	24	4
+159	Folinic	164	31	15	1	4	41	4
+160	Franka	163	4	43	1	3	20	4
+161	Frost	172	29	38	2	6	64	4
+162	Fuze	180	29	38	2	3	12	3
+163	Glaucus	159	2	37	2	7	18	4
+164	Grain Buds	153	34	21	2	7	18	4
+165	Grani	154	32	19	2	8	14	4
+166	GreyThroat	162	28	21	2	5	39	4
+167	Greyy the Lightningbearer	169	3	27	1	5	25	3
+168	Harmonie	160	32	15	2	1	44	4
+169	Harold	190	32	15	2	4	65	3
+170	Heavyrain	159	24	19	2	2	49	4
+171	Heidi	165	32	15	2	7	9	4
+172	Hibiscus the Purifier	160	32	34	1	4	33	4
+173	Highmore	156	10	1	2	3	51	4
+174	Honeyberry	155	22	44	2	4	65	4
+175	Hung	183	17	27	2	2	28	3
+176	Iana	157	29	38	2	6	19	4
+177	Indra	173	29	15	1	3	24	4
+178	Insider	184	15	33	2	5	39	3
+179	Iris	147	32	15	2	1	44	4
+180	Istina	156	31	41	2	7	18	4
+181	Jieyun	164	34	2	1	5	6	4
+182	Kafka	149	4	21	1	6	23	4
+183	Kazemaru	157	9	15	2	6	19	4
+184	Kestrel	170	24	21	1	8	46	4
+185	Kirara	160	9	1	1	6	4	4
+186	Kjera	165	14	37	2	1	40	4
+187	Kroos the Keen Glint	161	22	8	1	5	39	4
+188	La Pluma	166	3	21	2	3	51	4
+189	Laios	185	20	36	2	3	20	3
+190	Lappland	162	27	23	1	3	38	4
+191	Lava the Purgatory	158	32	34	1	1	57	4
+192	Leizi	171	34	20	2	1	13	4
+193	Leonhardt	165	22	8	1	1	57	3
+194	Leto	167	31	41	2	3	38	4
+195	Liskarm	156	33	42	2	2	53	4
+196	Lucilla	166	1	1	2	7	30	4
+197	Lunacub	148	27	23	1	5	17	4
+198	Manticore	155	24	24	1	6	4	4
+199	Mayer	159	4	3	2	7	60	4
+200	Melanite	155	4	29	1	5	29	4
+201	Meteorite	170	12	34	1	5	6	4
+202	Minimalist	130	5	11	1	1	40	3
+203	Mint	155	32	15	1	1	45	4
+204	Mitm	165	12	34	1	8	62	3
+205	Morgan	165	32	15	2	3	20	4
+206	Mr. Nothing	187	34	21	2	6	42	3
+207	Mulberry	158	34	21	1	4	65	4
+208	Nearl	171	13	19	1	2	28	4
+209	Nightmare	156	32	15	1	1	15	4
+210	Nine-Colored Deer	172	34	13	2	7	1	4
+211	Odda	168	12	34	1	3	22	3
+212	Paprika	155	4	34	1	4	13	4
+213	Papyrus	160	24	15	2	4	13	4
+214	Philae	168	24	34	1	2	48	4
+215	Platinum	160	13	19	2	5	39	4
+216	Poncirus	155	25	21	1	8	46	4
+217	Pramanix	161	14	15	2	7	30	4
+218	Projekt Red	162	28	23	2	6	23	4
+219	Provence	162	27	23	1	5	29	4
+220	Proviso	165	13	19	2	7	18	4
+221	Ptilopsis	164	4	21	3	4	43	4
+222	Puzzle	177	32	42	1	8	2	3
+223	Qanipalaat	169	23	43	2	1	15	3
+224	Quercus	174	32	15	2	7	1	4
+225	Rathalos S Noir Corne	180	9	26	1	3	56	3
+226	Reed	172	32	10	1	8	14	4
+227	Robin	155	4	3	2	6	64	4
+228	Rockrock	161	32	15	2	1	40	4
+229	Rose Salt	146	10	29	1	4	43	4
+230	Sand Reckoner	170	24	21	2	7	60	3
+231	Santalla	170	23	15	1	1	57	4
+232	Savage	160	22	8	2	3	12	4
+233	Scene	154	24	30	1	7	60	4
+234	Senshi	140	11	12	2	2	28	3
+235	Sesa	189	24	42	2	5	6	3
+236	Shalem	179	32	29	1	2	8	3
+237	Shamare	138	27	43	1	7	30	4
+238	Sideroca	164	18	16	2	3	7	4
+239	Silence	154	4	21	1	4	41	4
+240	Skyfire	162	32	15	2	1	57	4
+241	Snowsant	155	17	21	2	6	31	4
+242	Sora	155	30	40	2	7	9	4
+243	Specter	162	1	37	3	3	12	4
+244	Spuria	159	15	33	2	6	27	4
+245	Swire	163	17	15	2	3	34	4
+246	Tachanka	183	29	38	2	3	61	3
+247	Tecno	130	3	11	1	1	54	4
+248	Tequila	182	3	27	2	3	36	3
+249	Texas	161	4	23	2	8	46	4
+250	Tin Man	184	28	37	3	6	3	3
+251	Toddifons	168	32	42	1	5	10	4
+252	Tomimi	142	24	5	2	1	15	4
+253	Tsukinogi	165	9	13	1	7	1	4
+254	Tuye	153	24	16	1	4	41	4
+255	Underflow	170	1	1	2	2	53	4
+256	Valarqvin	188	23	34	1	7	52	4
+257	Vendela	160	32	15	1	4	33	4
+258	Vulcan	170	18	16	1	2	35	4
+259	Waai Fu	162	34	15	2	6	23	4
+260	Wanqing	170	34	16	2	8	59	3
+261	Warfarin	157	12	34	2	4	41	4
+262	Warmy	140	22	8	1	1	47	4
+263	Whislash	165	13	19	2	3	34	4
+264	Whisperain	169	10	1	2	4	63	4
+265	Wild Mane	158	13	19	1	8	14	4
+266	Wind Chimes	175	34	16	1	3	16	4
+267	Windflit	180	4	27	2	7	5	3
+268	Zima	162	31	41	2	8	46	4
+269	Pith	165	32	21	1	1	57	4
+270	Sharp	180	4	29	1	3	20	3
+271	Stormeye	180	12	34	1	5	39	3
+272	Touch	152	16	7	1	4	41	4
+273	Tulip	177	10	29	1	8	46	4
+274	Aciddrop	150	4	21	1	5	29	4
+275	Ambriel	160	15	33	2	5	17	4
+276	Arene	161	15	33	1	3	38	3
+277	Beanstalk	155	4	32	2	8	62	4
+278	Beehunter	163	31	41	1	3	24	4
+279	Bubble	135	24	9	1	2	49	4
+280	Caper	150	3	8	1	5	37	4
+281	Chestnut	132	28	11	2	4	65	3
+282	Click	144	28	44	2	1	40	4
+283	Contrail	155	4	44	1	6	55	4
+284	Conviction	145	18	39	1	3	20	1
+285	Courier	177	14	18	2	8	46	3
+286	Cuora	148	28	28	1	2	49	4
+287	Cutter	155	4	43	1	3	61	4
+288	Deepcolor	163	28	37	2	7	60	4
+289	Dobermann	163	3	27	1	3	34	4
+290	Earthspirit	161	16	7	1	7	18	4
+291	Estelle	162	28	5	1	3	12	4
+292	Ethan	163	29	35	1	6	4	3
+293	Frostleaf	157	4	43	1	3	38	4
+3	Aak	161	17	15	2	6	27	3
+4	Angelina	162	8	43	1	7	18	4
+5	Archetto	152	15	21	2	5	39	4
+6	Ascalon	175	12	34	1	6	4	4
+7	Ash	170	29	38	2	5	39	4
+8	Bagpipe	167	32	42	2	8	14	4
+9	Blaze	172	32	15	1	3	12	4
+10	Blemishine	165	13	19	2	2	28	4
+11	Carnelian	173	24	7	2	1	45	4
+12	Ceobe	153	3	27	1	1	15	4
+13	Ch'en	168	17	22	3	3	61	4
+14	Ch'en the Holungday	168	17	22	1	5	58	4
+15	Chongyue	188	34	37	2	3	24	3
+16	Civilight Eterna	165	12	37	3	7	9	4
+17	Crownslayer	161	31	32	1	6	23	4
+18	Degenbrecher	182	16	7	2	3	61	4
+19	Dorothy	170	4	44	2	6	64	4
+20	Dusk	162	34	37	2	1	57	4
+21	Ebenholz	173	16	7	1	1	44	3
+22	Ela	173	29	38	2	6	64	4
+23	Eunectes	171	24	29	1	2	21	4
+24	Executor the Ex Foedere	181	15	33	2	3	51	3
+25	Exusiai	159	15	33	2	5	39	4
+26	Eyjafjalla	145	16	7	1	1	15	4
+27	Eyjafjalla the Hvít Aska	153	16	7	1	4	65	4
+28	Fartooth	155	13	21	1	5	17	4
+29	Fiammetta	171	15	21	2	5	6	4
+30	Flametail	159	13	44	1	8	46	4
+31	Gavial the Invincible	163	24	5	1	3	12	4
+32	Gladiia	181	1	37	2	6	31	4
+33	Gnosis	188	14	21	2	7	30	3
+34	Goldenglow	159	32	15	1	1	40	4
+35	Hellagur	193	31	21	1	3	56	3
+36	Ho'olheyak	171	4	37	2	1	15	4
+37	Hoederer	185	12	34	1	3	16	3
+38	Horn	168	32	23	2	2	26	4
+39	Hoshiguma	184	9	26	2	2	49	4
+40	Ifrit	159	29	34	3	1	11	4
+41	Ines	168	12	37	1	8	2	4
+42	Irene	156	10	21	2	3	61	4
+294	Gavial	163	28	5	1	4	41	4
+295	Gitano	171	23	13	1	1	57	4
+296	Gravel	156	13	44	2	6	23	4
+297	Greyy	163	3	27	1	1	57	3
+298	Gummy	155	31	41	2	2	28	4
+299	Haze	158	32	15	1	1	15	4
+300	Humus	185	4	16	1	3	51	3
+301	Indigo	167	10	29	2	1	44	4
+302	Jackie	157	4	27	1	3	24	4
+303	Jaye	174	17	41	2	6	42	3
+304	Jessica	147	32	15	2	5	39	4
+305	Luo Xiaohei	-1	29	15	2	3	38	3
+306	Lutonada	159	3	44	1	2	35	4
+307	Matoimaru	172	9	26	2	3	20	4
+308	Matterhorn	182	14	16	2	2	49	3
+309	May	151	32	21	2	5	39	4
+310	Meteor	164	13	19	1	5	39	4
+311	Mousse	154	32	15	1	3	7	4
+312	Myrrh	143	29	43	2	4	41	4
+313	Myrtle	131	29	11	2	8	59	4
+314	Perfumer	158	18	43	1	4	43	4
+315	Pinecone	148	4	21	2	5	58	4
+316	Podenco	145	3	27	2	7	18	4
+317	Pudding	156	4	1	3	1	13	4
+318	Purestream	155	34	1	2	4	63	4
+319	Quartz	173	4	23	2	3	16	4
+320	Roberta	155	4	3	2	7	5	4
+321	Rope	155	22	8	1	6	31	4
+322	Scavenger	164	29	44	1	8	46	4
+323	Shaw	135	17	44	2	6	50	4
+324	Shirayuki	154	9	3	2	5	6	4
+325	Sussurro	142	27	43	1	4	41	4
+326	Totter	185	24	21	1	5	10	3
+327	Utage	161	9	38	1	3	56	4
+328	Verdant	163	32	29	1	6	19	3
+329	Vermeil	153	29	43	1	5	39	4
+330	Vigna	142	12	34	1	8	14	4
+331	Adnachiel	171	15	33	1	5	39	3
+332	Ansel	163	22	8	2	4	41	3
+333	Beagle	154	3	27	1	2	49	4
+334	Cardigan	156	16	27	2	2	49	4
+335	Catapult	163	13	19	1	5	6	4
+336	Fang	158	13	19	3	8	46	4
+337	Hibiscus	153	32	34	1	4	41	4
+338	Kroos	154	22	8	1	5	39	4
+339	Lava	154	32	34	1	1	57	4
+340	Melantha	161	32	15	1	3	20	4
+341	Midnight	187	7	34	1	3	38	3
+342	Orchid	164	4	21	1	7	18	4
+343	Plume	158	15	21	2	8	14	4
+344	Popukar	144	22	8	1	3	12	4
+345	Spot	169	24	31	1	2	28	3
+346	Steward	172	14	43	1	1	15	3
+347	Vanilla	172	33	42	2	8	46	4
+348	12F	181	29	35	2	1	57	3
+349	Durin	131	28	11	2	1	15	4
+350	Noir Corne	180	9	26	1	2	49	3
+351	Rangers	179	28	35	2	5	39	3
+352	Yato	161	9	26	1	8	46	4
+353	Castle-3	167	19	25	3	3	20	3
+354	Friston-3	145	19	25	3	2	49	3
+355	Justice Knight	160	19	25	3	5	39	4
+356	Lancet-2	149	19	25	3	4	41	4
+357	PhonoR-0	160	19	25	3	7	52	4
+358	THRM-EX	160	19	25	3	6	23	3
+359	Terra Research Commission	-1	29	37	2	5	25	2
+360	U-Official	159	28	44	2	7	9	4
 \.
 
 
 --
--- TOC entry 3453 (class 0 OID 16414)
+-- TOC entry 3470 (class 0 OID 16415)
 -- Dependencies: 222
 -- Data for Name: character_artist; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1493,7 +1644,7 @@ COPY public.character_artist (character_id, artist_id) FROM stdin;
 
 
 --
--- TOC entry 3455 (class 0 OID 16418)
+-- TOC entry 3472 (class 0 OID 16419)
 -- Dependencies: 224
 -- Data for Name: class; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1511,7 +1662,21 @@ COPY public.class (id, name) FROM stdin;
 
 
 --
--- TOC entry 3457 (class 0 OID 16424)
+-- TOC entry 3481 (class 0 OID 16524)
+-- Dependencies: 233
+-- Data for Name: gender; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.gender (id, name) FROM stdin;
+1	Conviction
+2	Unknown
+3	Male
+4	Female
+\.
+
+
+--
+-- TOC entry 3474 (class 0 OID 16425)
 -- Dependencies: 226
 -- Data for Name: infection; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1524,7 +1689,7 @@ COPY public.infection (id, name) FROM stdin;
 
 
 --
--- TOC entry 3459 (class 0 OID 16430)
+-- TOC entry 3476 (class 0 OID 16431)
 -- Dependencies: 228
 -- Data for Name: place_of_birth; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1568,7 +1733,7 @@ COPY public.place_of_birth (id, name) FROM stdin;
 
 
 --
--- TOC entry 3461 (class 0 OID 16436)
+-- TOC entry 3478 (class 0 OID 16437)
 -- Dependencies: 230
 -- Data for Name: race; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1622,7 +1787,7 @@ COPY public.race (id, name) FROM stdin;
 
 
 --
--- TOC entry 3475 (class 0 OID 0)
+-- TOC entry 3495 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: artist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1631,7 +1796,7 @@ SELECT pg_catalog.setval('public.artist_id_seq', 114, true);
 
 
 --
--- TOC entry 3476 (class 0 OID 0)
+-- TOC entry 3496 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: branch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1640,7 +1805,7 @@ SELECT pg_catalog.setval('public.branch_id_seq', 65, true);
 
 
 --
--- TOC entry 3477 (class 0 OID 0)
+-- TOC entry 3497 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: character_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1649,7 +1814,7 @@ SELECT pg_catalog.setval('public.character_id_seq', 360, true);
 
 
 --
--- TOC entry 3478 (class 0 OID 0)
+-- TOC entry 3498 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1658,7 +1823,16 @@ SELECT pg_catalog.setval('public.class_id_seq', 8, true);
 
 
 --
--- TOC entry 3479 (class 0 OID 0)
+-- TOC entry 3499 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: gender_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.gender_id_seq', 4, true);
+
+
+--
+-- TOC entry 3500 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: infection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1667,7 +1841,7 @@ SELECT pg_catalog.setval('public.infection_id_seq', 41, true);
 
 
 --
--- TOC entry 3480 (class 0 OID 0)
+-- TOC entry 3501 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: place_of_birth_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1676,7 +1850,7 @@ SELECT pg_catalog.setval('public.place_of_birth_id_seq', 34, true);
 
 
 --
--- TOC entry 3481 (class 0 OID 0)
+-- TOC entry 3502 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: race_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1685,7 +1859,7 @@ SELECT pg_catalog.setval('public.race_id_seq', 44, true);
 
 
 --
--- TOC entry 3269 (class 2606 OID 16450)
+-- TOC entry 3283 (class 2606 OID 16451)
 -- Name: artist artist_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1694,7 +1868,7 @@ ALTER TABLE ONLY public.artist
 
 
 --
--- TOC entry 3271 (class 2606 OID 16452)
+-- TOC entry 3285 (class 2606 OID 16453)
 -- Name: artist artist_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1703,7 +1877,7 @@ ALTER TABLE ONLY public.artist
 
 
 --
--- TOC entry 3273 (class 2606 OID 16454)
+-- TOC entry 3287 (class 2606 OID 16455)
 -- Name: branch branch_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1712,7 +1886,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3275 (class 2606 OID 16456)
+-- TOC entry 3289 (class 2606 OID 16457)
 -- Name: branch branch_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1721,7 +1895,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3277 (class 2606 OID 16458)
+-- TOC entry 3291 (class 2606 OID 16459)
 -- Name: character_artist character_artist_character_id_artist_id_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1730,7 +1904,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3279 (class 2606 OID 16460)
+-- TOC entry 3293 (class 2606 OID 16461)
 -- Name: character_artist character_artist_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1739,7 +1913,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3265 (class 2606 OID 16462)
+-- TOC entry 3279 (class 2606 OID 16463)
 -- Name: character character_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1748,7 +1922,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3267 (class 2606 OID 16464)
+-- TOC entry 3281 (class 2606 OID 16465)
 -- Name: character character_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1757,7 +1931,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3281 (class 2606 OID 16466)
+-- TOC entry 3295 (class 2606 OID 16467)
 -- Name: class class_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1766,7 +1940,7 @@ ALTER TABLE ONLY public.class
 
 
 --
--- TOC entry 3283 (class 2606 OID 16468)
+-- TOC entry 3297 (class 2606 OID 16469)
 -- Name: class class_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1775,7 +1949,16 @@ ALTER TABLE ONLY public.class
 
 
 --
--- TOC entry 3285 (class 2606 OID 16470)
+-- TOC entry 3311 (class 2606 OID 16531)
+-- Name: gender gender_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.gender
+    ADD CONSTRAINT gender_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3299 (class 2606 OID 16471)
 -- Name: infection infection_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1784,7 +1967,7 @@ ALTER TABLE ONLY public.infection
 
 
 --
--- TOC entry 3287 (class 2606 OID 16472)
+-- TOC entry 3301 (class 2606 OID 16473)
 -- Name: infection infection_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1793,7 +1976,7 @@ ALTER TABLE ONLY public.infection
 
 
 --
--- TOC entry 3289 (class 2606 OID 16474)
+-- TOC entry 3303 (class 2606 OID 16475)
 -- Name: place_of_birth place_of_birth_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1802,7 +1985,7 @@ ALTER TABLE ONLY public.place_of_birth
 
 
 --
--- TOC entry 3291 (class 2606 OID 16476)
+-- TOC entry 3305 (class 2606 OID 16477)
 -- Name: place_of_birth place_of_birth_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1811,7 +1994,7 @@ ALTER TABLE ONLY public.place_of_birth
 
 
 --
--- TOC entry 3293 (class 2606 OID 16478)
+-- TOC entry 3307 (class 2606 OID 16479)
 -- Name: race race_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1820,7 +2003,7 @@ ALTER TABLE ONLY public.race
 
 
 --
--- TOC entry 3295 (class 2606 OID 16480)
+-- TOC entry 3309 (class 2606 OID 16481)
 -- Name: race race_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1829,7 +2012,7 @@ ALTER TABLE ONLY public.race
 
 
 --
--- TOC entry 3301 (class 2606 OID 16481)
+-- TOC entry 3318 (class 2606 OID 16482)
 -- Name: character_artist character_artist_artist_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1838,7 +2021,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3302 (class 2606 OID 16486)
+-- TOC entry 3319 (class 2606 OID 16487)
 -- Name: character_artist character_artist_character_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1847,7 +2030,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3296 (class 2606 OID 16491)
+-- TOC entry 3312 (class 2606 OID 16492)
 -- Name: character character_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1856,7 +2039,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3297 (class 2606 OID 16496)
+-- TOC entry 3313 (class 2606 OID 16497)
 -- Name: character character_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1865,7 +2048,16 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3298 (class 2606 OID 16501)
+-- TOC entry 3314 (class 2606 OID 16535)
+-- Name: character character_gender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public."character"
+    ADD CONSTRAINT character_gender_id_fkey FOREIGN KEY (gender_id) REFERENCES public.gender(id) NOT VALID;
+
+
+--
+-- TOC entry 3315 (class 2606 OID 16502)
 -- Name: character character_infection_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1874,7 +2066,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3299 (class 2606 OID 16506)
+-- TOC entry 3316 (class 2606 OID 16507)
 -- Name: character character_place_of_birth_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1883,7 +2075,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3300 (class 2606 OID 16511)
+-- TOC entry 3317 (class 2606 OID 16512)
 -- Name: character character_race_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -1891,7 +2083,7 @@ ALTER TABLE ONLY public."character"
     ADD CONSTRAINT character_race_id_fkey FOREIGN KEY (race_id) REFERENCES public.race(id) NOT VALID;
 
 
--- Completed on 2025-01-03 14:00:33 UTC
+-- Completed on 2025-01-06 10:22:49 UTC
 
 --
 -- PostgreSQL database dump complete
