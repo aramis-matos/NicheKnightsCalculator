@@ -45,3 +45,13 @@ useHead({
   ],
 });
 </script>
+
+<style>
+.page-leave-active {
+  @apply animate-fade animate-reverse animate-duration-200;
+}
+
+.page-enter-active {
+  @apply animate-fade animate-duration-200;
+}
+</style>

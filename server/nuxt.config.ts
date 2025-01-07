@@ -23,4 +23,11 @@ export default defineNuxtConfig({
   "graphql-client": {
     codegen: false,
   },
+
+  app: {
+    pageTransition: {
+      name: "page",
+      mode: "out-in",
+    },
+  },
 });
