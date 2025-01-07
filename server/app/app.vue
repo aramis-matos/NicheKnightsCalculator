@@ -48,10 +48,10 @@ useHead({
 
 <style>
 .page-leave-active {
-  @apply animate-fade animate-reverse animate-duration-200;
+  @apply animate-fade-down animate-reverse animate-duration-500;
 }
 
 .page-enter-active {
-  @apply animate-fade animate-duration-200;
+  @apply animate-fade-up animate-duration-500;
 }
 </style>

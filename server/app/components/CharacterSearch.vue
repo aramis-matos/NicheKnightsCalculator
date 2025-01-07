@@ -62,6 +62,6 @@ function setName(name: string) {
   router.push({
     query: { op: name },
   });
-  store.setName(name);
+  store.setName(name === store.name ? "" : name);
 }
 </script>
