@@ -40,6 +40,10 @@ watch(
     ).allCharacterArtist;
   },
 );
+
+function getHeight(height?: number): string {
+  return height !== -1 ? `${height} cm` : "Unknown"
+}
 </script>
 
 <template>
@@ -52,12 +56,11 @@ watch(
       <Attribute attr="Class" :val="operator.characterByName?.classByClassId?.name" />
       <Attribute attr="Branch" :val="operator.characterByName?.branchByBranchId?.name" />
       <Attribute attr="Gender" :val="operator.characterByName?.genderByGenderId?.name" />
-      <Attribute attr="Height" :val="`${operator.characterByName?.height.toString()} cm`" />
+      <Attribute attr="Height" :val="getHeight(operator.characterByName?.height)" />
       <Attribute attr="Place of Birth" :val="operator.characterByName?.placeOfBirthByPlaceOfBirthId?.name
         " />
       <Attribute attr="Race" :val="operator.characterByName?.raceByRaceId?.name" />
       <Attribute attr="Infection Status" :val="operator.characterByName?.infectionByInfectionId?.name" />
-
       <div class="flex">
         <div class="flex flex-col w-1/2">
           <p><span class="font-semibold">Artists</span>:</p>

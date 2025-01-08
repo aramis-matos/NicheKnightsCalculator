@@ -1,5 +1,4 @@
 <template>
-
   <div class="flex flex-col gap-4">
     <UContainer class="w-full max-w-6xl">
       <UCard>
