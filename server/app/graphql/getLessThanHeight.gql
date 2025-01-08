@@ -30,6 +30,7 @@ query allCharacter($search: String) {
 
 query getOperatorDetails($name: String!) {
   characterByName(name: $name) {
+    rarity
     name
     height
     placeOfBirthByPlaceOfBirthId {

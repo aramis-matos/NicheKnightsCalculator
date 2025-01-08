@@ -25,7 +25,7 @@ export const useNiche = defineStore("niche", {
         place: this.niches.placesOfBirth,
         race: this.niches.races,
         artist: this.niches.artists,
-        rarity: this.niches.rarity,
+        rarity: this.niches.rarity.map((elem) => elem.split(" ")[0]),
       });
 
       const vals = (Object.keys(res) as (keyof typeof res)[])

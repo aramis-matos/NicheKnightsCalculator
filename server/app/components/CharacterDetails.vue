@@ -42,36 +42,69 @@ watch(
 );
 
 function getHeight(height?: number): string {
-  return height !== -1 ? `${height} cm` : "Unknown"
+  return height !== -1 ? `${height} cm` : "Unknown";
 }
 </script>
 
 <template>
-  <div class="flex gap-8 items-center pb-4">
-    <NuxtImg :src="`/${operator.characterByName?.classByClassId?.name}.webp`" class="size-10" />
+  <div class="flex items-center gap-8 pb-4">
+    <NuxtImg
+      :src="`/${operator.characterByName?.classByClassId?.name}.webp`"
+      class="size-10"
+    />
     <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
   </div>
-  <div class="flex w-full justify-between items-center">
+  <div class="flex w-full items-center justify-between">
     <div class="flex w-1/2 flex-col">
-      <Attribute attr="Class" :val="operator.characterByName?.classByClassId?.name" />
-      <Attribute attr="Branch" :val="operator.characterByName?.branchByBranchId?.name" />
-      <Attribute attr="Gender" :val="operator.characterByName?.genderByGenderId?.name" />
-      <Attribute attr="Height" :val="getHeight(operator.characterByName?.height)" />
-      <Attribute attr="Place of Birth" :val="operator.characterByName?.placeOfBirthByPlaceOfBirthId?.name
-        " />
-      <Attribute attr="Race" :val="operator.characterByName?.raceByRaceId?.name" />
-      <Attribute attr="Infection Status" :val="operator.characterByName?.infectionByInfectionId?.name" />
+      <Attribute
+        attr="Rarity"
+        :val="operator.characterByName?.rarity.toString() + ' Star'"
+      />
+      <Attribute
+        attr="Class"
+        :val="operator.characterByName?.classByClassId?.name"
+      />
+      <Attribute
+        attr="Branch"
+        :val="operator.characterByName?.branchByBranchId?.name"
+      />
+      <Attribute
+        attr="Gender"
+        :val="operator.characterByName?.genderByGenderId?.name"
+      />
+      <Attribute
+        attr="Height"
+        :val="getHeight(operator.characterByName?.height)"
+      />
+      <Attribute
+        attr="Place of Birth"
+        :val="operator.characterByName?.placeOfBirthByPlaceOfBirthId?.name"
+      />
+      <Attribute
+        attr="Race"
+        :val="operator.characterByName?.raceByRaceId?.name"
+      />
+      <Attribute
+        attr="Infection Status"
+        :val="operator.characterByName?.infectionByInfectionId?.name"
+      />
       <div class="flex">
-        <div class="flex flex-col w-1/2">
+        <div class="flex w-1/2 flex-col">
           <p><span class="font-semibold">Artists</span>:</p>
           <ul class="list-inside list-disc">
-            <li v-for="artist of artists.allCharacterArtist?.nodes" :key="artist?.id">
+            <li
+              v-for="artist of artists.allCharacterArtist?.nodes"
+              :key="artist?.id"
+            >
               {{ artist?.name }}
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <NuxtImg src="/logo.png" class="w-1/2 max-w-48" />
+    <NuxtImg
+      :src="`thumbnails/${operator.characterByName?.rarity}star/100px-${operator.characterByName?.name}_icon.png`"
+      class="w-1/2 max-w-48"
+    />
   </div>
 </template>
