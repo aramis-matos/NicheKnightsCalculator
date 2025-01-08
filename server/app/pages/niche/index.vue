@@ -4,11 +4,11 @@ const store = useNiche();
 
 const results = ref<{ name?: string; class?: string }[]>([]);
 
-const clicked = ref(false)
+const clicked = ref(false);
 
 async function getNiches(): Promise<void> {
   results.value = await store.getNiches();
-  clicked.value = true
+  clicked.value = true;
 }
 </script>
 
@@ -22,17 +22,67 @@ async function getNiches(): Promise<void> {
         </div>
         <div class="grid grid-cols-1 gap-4">
           <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <NicheSelect query="allClasses" resKey="allClasses" title="Classes" niche="classes" />
-            <NicheSelect query="allBranches" resKey="allBranches" title="Branches" niche="branches" />
-            <NicheSelect query="allArtists" resKey="allArtists" title="Artists" niche="artists" />
-            <NicheSelect query="allPlaceOfBirths" resKey="allPlaceOfBirths" title="Places of Birth"
-              niche="placesOfBirth" />
-            <NicheSelect query="allRaces" resKey="allRaces" title="Races" niche="races" />
-            <NicheSelect query="allGenders" resKey="allGenders" title="Genders" niche="genders" />
-            <NicheSelect query="allInfections" resKey="allInfections" title="Is Infected?" niche="infections" />
+            <NicheSelect
+              query="allRarity"
+              resKey="allRarity"
+              title="Rarity"
+              niche="rarity"
+              placeholder="Rarity"
+            />
+            <NicheSelect
+              query="allClasses"
+              resKey="allClasses"
+              title="Classes"
+              niche="classes"
+              placeholder="Classes"
+            />
+            <NicheSelect
+              query="allBranches"
+              resKey="allBranches"
+              title="Branches"
+              niche="branches"
+              placeholder="Branches"
+            />
+            <NicheSelect
+              query="allArtists"
+              resKey="allArtists"
+              title="Artists"
+              niche="artists"
+              placeholder="Artists"
+            />
+            <NicheSelect
+              query="allPlaceOfBirths"
+              resKey="allPlaceOfBirths"
+              title="Places of Birth"
+              niche="placesOfBirth"
+              placeholder="Places of Birth"
+            />
+            <NicheSelect
+              query="allRaces"
+              resKey="allRaces"
+              title="Races"
+              niche="races"
+              placeholder="Places of Birth"
+            />
+            <NicheSelect
+              query="allGenders"
+              resKey="allGenders"
+              title="Genders"
+              niche="genders"
+              placeholder="Genders"
+            />
+            <NicheSelect
+              query="allInfections"
+              resKey="allInfections"
+              title="Is Infected?"
+              niche="infections"
+              placeholder="Infection Status"
+            />
           </div>
           <div class="flex items-center justify-center">
-            <UButton @click="getNiches" size="md" variant="soft">Calculate</UButton>
+            <UButton @click="getNiches" size="md" variant="soft"
+              >Calculate</UButton
+            >
           </div>
         </div>
       </UCard>
@@ -40,18 +90,28 @@ async function getNiches(): Promise<void> {
     <transition mode="out-in">
       <UContainer class="calculation" v-if="results.length > 0" key="has_res">
         <UCard>
-          <ul class="grid max-h-96 grid-cols-2 place-content-center gap-4 overflow-y-auto md:grid-cols-3">
-            <li v-for="op of results" :key="`${op.name}+${op.class}`" class="flex gap-4">
+          <ul
+            class="grid max-h-96 grid-cols-2 place-content-center gap-4 overflow-y-auto md:grid-cols-3"
+          >
+            <li
+              v-for="op of results"
+              :key="`${op.name}+${op.class}`"
+              class="flex gap-4"
+            >
               <CharIcon :class="op.class" />
               <p>{{ op.name }}</p>
             </li>
           </ul>
         </UCard>
       </UContainer>
-      <UContainer class="calculation" v-else-if="clicked && results.length === 0" key="no_res">
+      <UContainer
+        class="calculation"
+        v-else-if="clicked && results.length === 0"
+        key="no_res"
+      >
         <UCard>
-          <div class="flex justify-center items-center">
-            <p class="font-semibold text-3xl">No Results</p>
+          <div class="flex items-center justify-center">
+            <p class="text-3xl font-semibold">No Results</p>
           </div>
         </UCard>
       </UContainer>
@@ -61,14 +121,14 @@ async function getNiches(): Promise<void> {
 
 <style scoped>
 .v-enter-active {
-  @apply animate-fade-down animate-duration-500
+  @apply animate-fade-down animate-duration-500;
 }
 
 .v-leave-active {
-  @apply animate-fade-down animate-reverse animate-duration-500
+  @apply animate-fade-down animate-reverse animate-duration-500;
 }
 
 .calculation {
-  @apply mt-8 w-full max-w-6xl
+  @apply mt-8 w-full max-w-6xl;
 }
 </style>

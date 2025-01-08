@@ -1,0 +1,5 @@
+query allRarity {
+  allRarity {
+    nodes
+  }
+}
