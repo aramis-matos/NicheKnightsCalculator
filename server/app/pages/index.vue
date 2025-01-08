@@ -1,3 +1,3 @@
 <template>
-  <USelect :options="['hello', 'hi']" />
+  <NuxtImg src="class_icons/Caster.svg" />
 </template>

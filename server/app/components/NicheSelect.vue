@@ -43,7 +43,7 @@ watch(selectedValues, () => {
         class="w-full"
         :options="
           props.query === 'allRarity'
-            ? res.all?.nodes.map((elem) => elem.toString() + ' stars')
+            ? res.all?.nodes.map((elem) => elem.toString() + ' Stars')
             : res.all?.nodes
                 .filter((elem) => elem !== null)
                 .map((elem) => elem.name)

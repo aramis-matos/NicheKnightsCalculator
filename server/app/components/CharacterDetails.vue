@@ -50,7 +50,7 @@ function getHeight(height?: number): string {
   <div class="flex items-center gap-8 pb-4">
     <NuxtImg
       :src="`/${operator.characterByName?.classByClassId?.name}.webp`"
-      class="size-10"
+      class="size-10 invert dark:invert-0"
     />
     <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
   </div>

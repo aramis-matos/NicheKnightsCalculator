@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const colorMode = useColorMode();
+const isDark = computed({
+  get() {
+    return colorMode.value === "dark";
+  },
+  set() {
+    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  },
+});
+
 const links = [
   { label: "Home", to: "/", icon: "i-heroicons-home" },
   {
@@ -20,21 +30,40 @@ const links = [
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row gap-4 md:gap-0 items-baseline justify-between pl-4 pt-4">
+  <div
+    class="flex flex-col items-baseline justify-between gap-4 pl-4 pt-4 md:flex-row md:gap-0"
+  >
     <NuxtLink class="flex justify-center gap-4" to="/">
-      <NuxtImg src="/logo.png" class="size-8 hidden md:block" />
+      <NuxtImg src="/logo.png" class="hidden size-8 md:block" />
       <p class="text-2xl font-bold">NicheKnights</p>
     </NuxtLink>
 
     <div>
-      <UVerticalNavigation :links="links" class="navbar-spacing flex md:hidden" />
-      <UHorizontalNavigation :links="links" class="navbar-spacing hidden md:flex" />
+      <UVerticalNavigation
+        :links="links"
+        class="navbar-spacing flex md:hidden"
+      />
+      <UHorizontalNavigation
+        :links="links"
+        class="navbar-spacing hidden md:flex"
+      />
+    </div>
+    <div>
+      <UButton
+        :icon="
+          isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'
+        "
+        color="gray"
+        variant="ghost"
+        aria-label="Theme"
+        @click="isDark = !isDark"
+      />
     </div>
   </div>
 </template>
 
 <style scoped>
 .navbar-spacing {
-  @apply mb-2 md:mb-8 pl-0 md:pl-4
+  @apply mb-2 pl-0 md:mb-8 md:pl-4;
 }
 </style>
