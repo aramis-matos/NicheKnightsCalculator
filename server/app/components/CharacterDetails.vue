@@ -71,7 +71,7 @@ function getHeight(height?: number): string {
     />
     <h1 class="text-4xl">{{ operator.characterByName?.name }}</h1>
   </div>
-  <div class="flex w-full items-center justify-between">
+  <div class="flex w-full flex-col items-start justify-between md:flex-row">
     <div class="flex w-1/2 flex-col">
       <Attribute
         attr="Rarity"
@@ -131,9 +131,11 @@ function getHeight(height?: number): string {
         </ul>
       </div>
     </div>
-    <NuxtImg
-      :src="`thumbnails/${operator.characterByName?.rarity}star/100px-${operator.characterByName?.name.replaceAll(' ', '_')}_icon.png`"
-      class="w-1/2 max-w-48"
-    />
+    <div class="flex size-full items-center justify-center md:justify-end">
+      <NuxtImg
+        :src="`thumbnails/${operator.characterByName?.rarity}star/100px-${operator.characterByName?.name.replaceAll(' ', '_')}_icon.png`"
+        class="w-1/2 max-w-48"
+      />
+    </div>
   </div>
 </template>

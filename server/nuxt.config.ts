@@ -22,6 +22,15 @@ export default defineNuxtConfig({
 
   "graphql-client": {
     codegen: false,
+    tokenStorage: {
+      name: "__session",
+      mode: "cookie", // default
+      cookieOptions: {
+        path: "/",
+        httpOnly: true, // Only accessible via HTTP(S)
+        maxAge: 60 * 60 * 24 * 5, // 5 days
+      },
+    },
   },
 
   app: {

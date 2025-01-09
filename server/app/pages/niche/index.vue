@@ -98,7 +98,7 @@ async function getNiches(): Promise<void> {
       <UContainer class="calculation" v-if="results.length > 0" key="has_res">
         <UCard>
           <ul
-            class="grid max-h-96 grid-cols-2 place-content-center gap-4 overflow-y-auto md:grid-cols-3"
+            class="grid h-1/2 max-h-96 grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3"
           >
             <li
               v-for="op of results"

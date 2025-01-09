@@ -1,7 +1,11 @@
 <template>
   <label class="flex items-center gap-1">
-    <UInput class="mb-4 grow" placeholder="Search for Operator" id="search-character"
-      v-model="(input.search as string | undefined)" />
+    <UInput
+      class="mb-4 grow"
+      placeholder="Search for Operator"
+      id="search-character"
+      v-model="input.search as string | undefined"
+    />
   </label>
   <UDivider class="py-4" label="Results" />
   <h2 class="flex gap-2">
@@ -11,12 +15,18 @@
     </UBadge>
   </h2>
   <div
-    class="flex max-h-48 md:max-h-96 flex-col gap-2 overflow-x-hidden overflow-y-scroll mt-4 drop-shadow-xl shadow-xl rounded-lg p-2">
-    <div class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0">
+    class="mt-4 flex max-h-48 flex-col gap-2 overflow-x-hidden overflow-y-scroll rounded-lg p-2 shadow-xl drop-shadow-xl md:max-h-96"
+  >
+    <div
+      class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0 lg:grid-cols-4 xl:grid-cols-6"
+    >
       <button
-        class="hover:bg-primary hover:cursor-pointer flex w-fit items-center justify-start gap-4 p-2 transition-all md:w-full"
-        :key="vals?.id" v-for="vals in allCharacters.allGeneralSearch?.nodes" @click="setName(vals!.name)">
-        <CharIcon :class="(vals?.classByClassId?.name as string)" />
+        class="hover:bg-primary flex w-fit items-center justify-start gap-4 p-2 transition-all hover:cursor-pointer md:w-full"
+        :key="vals?.id"
+        v-for="vals in allCharacters.allGeneralSearch?.nodes"
+        @click="setName(vals!.name)"
+      >
+        <CharIcon :class="vals?.classByClassId?.name as string" />
         <p class="text-left">{{ vals?.name }}</p>
       </button>
     </div>
