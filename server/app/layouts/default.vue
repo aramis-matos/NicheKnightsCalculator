@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="w-full">
+  <UContainer class="w-full max-w-7xl">
     <NavBar />
     <slot />
   </UContainer>

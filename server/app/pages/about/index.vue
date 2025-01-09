@@ -1,7 +1,9 @@
 <template>
-  <div>This is about NicheKnights</div>
+  <article class="prose dark:prose-invert">
+    <ContentDoc path="/about" />
+  </article>
 </template>
 
 <script setup lang="ts">
-useSeoMeta({title: "About"})
+useSeoMeta({ title: "About" });
 </script>

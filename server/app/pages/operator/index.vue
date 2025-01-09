@@ -1,16 +1,12 @@
 <template>
   <div class="flex flex-col gap-4">
-    <UContainer class="w-full max-w-6xl">
-      <UCard>
-        <CharacterSearch />
-      </UCard>
-    </UContainer>
+    <UCard>
+      <CharacterSearch />
+    </UCard>
     <transition>
-      <UContainer v-if="store.name !== ''" class="w-full max-w-6xl">
-        <UCard>
-          <CharacterDetails />
-        </UCard>
-      </UContainer>
+      <UCard v-if="store.name !== ''" class="w-full">
+        <CharacterDetails />
+      </UCard>
     </transition>
   </div>
 </template>
@@ -30,10 +26,10 @@ store.setName((query.op as string | undefined) ?? "");
 }
 
 .v-enter-active {
-  @apply animate-fade-down animate-duration-500
+  @apply animate-fade-down animate-duration-500;
 }
 
 .v-leave-active {
-  @apply animate-fade-down animate-reverse animate-duration-500
+  @apply animate-fade-down animate-reverse animate-duration-500;
 }
 </style>
