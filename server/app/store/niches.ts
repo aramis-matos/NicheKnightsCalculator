@@ -7,9 +7,26 @@ import { initialNiche, type Niches } from "~/models/store";
 
 export const useNiche = defineStore("niche", {
   state: () => ({ ...initialNiche }),
+  getters: {
+    getNichesAmount: (store) =>
+      Object.values(store.niches).filter((elem) => elem.length > 0).length,
+    canExclude(store) {
+      return (
+        Object.values(store.niches).filter((elem) => elem.length > 0).length > 1
+      );
+    },
+    canCompute(store) {
+      return (
+        Object.values(store.niches).filter((elem) => elem.length > 0).length > 0
+      );
+    },
+  },
   actions: {
     setValue(values: string[], key: keyof Niches) {
       this.$patch({ niches: { ...this.niches, [key]: values } });
+    },
+    initialize() {
+      this.$patch({ ...initialNiche });
     },
     async getNiches(): Promise<{ name?: string; class?: string }[]> {
       const { useGql } = useGqlWithTypes<
