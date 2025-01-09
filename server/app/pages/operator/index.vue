@@ -18,6 +18,16 @@ const { query } = useRoute();
 const store = useSelectedCharacter();
 
 store.setName((query.op as string | undefined) ?? "");
+
+const meta = useSeoMeta({
+  title: "Operator",
+  description:
+    store.name === "" ? "Get Operator Details" : `${store.name} Details`,
+  ogDescription:
+    store.name === "" ? "Get Operator Details" : `${store.name} Details`,
+  twitterDescription:
+    store.name === "" ? "Get Operator Details" : `${store.name} Details`,
+});
 </script>
 
 <style scoped>

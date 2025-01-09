@@ -1,3 +1,7 @@
+---
+title: About Us
+---
+
 # Report An Issue / Contribute
 
 Create a pull request at the [repository](https://github.com/aramis-matos/NicheKnightsCalculator) to provide feedback, report issues or request additional categories

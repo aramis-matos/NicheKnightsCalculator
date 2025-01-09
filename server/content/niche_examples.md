@@ -1,3 +1,8 @@
+---
+title: "Home"
+description: "Find Your New Favorite Arknights Niche!"
+---
+
 ### Select Criteria
 
 #### One Category

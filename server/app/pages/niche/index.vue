@@ -14,6 +14,13 @@ async function getNiches(): Promise<void> {
 onBeforeUnmount(() => {
   store.initialize();
 });
+
+useSeoMeta({
+  title: "Niches",
+  description: "Calculate Your Niche",
+  ogDescription: "Calculate Your Niche",
+  twitterDescription: "Calculate Your Niche",
+});
 </script>
 
 <template>

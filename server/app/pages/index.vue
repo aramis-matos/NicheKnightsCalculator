@@ -48,6 +48,13 @@ const links = [
     to: "https://bun.sh/",
   },
 ];
+
+useSeoMeta({
+  title: "Home",
+});
+useHead({
+  title: "Home",
+});
 </script>
 <template>
   <UCard>
