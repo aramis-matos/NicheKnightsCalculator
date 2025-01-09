@@ -7,6 +7,7 @@ query orCharacters(
   $gender: [String!]!
   $artist: [String!]!
   $rarity: [BigFloat!]!
+  $trait: [String!]!
 ) {
   orPlacesOfBirth(ops: $place) {
     nodes {
@@ -66,7 +67,14 @@ query orCharacters(
   }
   orRarity(search: $rarity) {
     nodes {
-      rarity
+      name
+      classByClassId {
+        name
+      }
+    }
+  }
+  orTraits(search: $trait) {
+    nodes {
       name
       classByClassId {
         name

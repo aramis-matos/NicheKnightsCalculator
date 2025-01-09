@@ -1,0 +1,8 @@
+query allTraitsCharacter($search: String!) {
+  allTraitsCharacter(search: $search) {
+    nodes {
+      id
+      name
+    }
+  }
+}

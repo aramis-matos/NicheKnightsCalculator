@@ -7,6 +7,7 @@ export type Niches = {
   genders: string[];
   artists: string[];
   rarity: string[];
+  traits: string[];
 };
 
 export type SelectedCharacterInitialState = {
@@ -32,6 +33,7 @@ export const initialNiche: NicheInitialState = {
     genders: [],
     artists: [],
     rarity: [],
+    traits: [],
   },
   isAnd: false,
 };

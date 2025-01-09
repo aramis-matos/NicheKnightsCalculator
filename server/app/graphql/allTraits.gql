@@ -1,0 +1,7 @@
+query allCustomTraits {
+  allCustomTraits {
+    nodes {
+      name
+    }
+  }
+}

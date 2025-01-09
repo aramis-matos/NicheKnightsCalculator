@@ -78,6 +78,13 @@ async function getNiches(): Promise<void> {
               niche="infections"
               placeholder="Infection Status"
             />
+            <NicheSelect
+              query="allCustomTraits"
+              resKey="allCustomTraits"
+              title="Misc. Traits"
+              niche="traits"
+              placeholder="Misc Traits"
+            />
           </div>
           <div class="flex items-center justify-center">
             <UButton @click="getNiches" size="md" variant="soft"

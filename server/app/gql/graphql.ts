@@ -26,6 +26,29 @@ export type Scalars = {
   Cursor: { input: any; output: any; }
 };
 
+/** All input for the `addCharacterTraits` mutation. */
+export type AddCharacterTraitsInput = {
+  chars?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  traits?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+/** The output of our `addCharacterTraits` mutation. */
+export type AddCharacterTraitsPayload = {
+  __typename?: 'AddCharacterTraitsPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 /** A connection to a list of `Int` values. */
 export type AllRarityConnection = {
   __typename?: 'AllRarityConnection';
@@ -153,6 +176,8 @@ export type Character = Node & {
   branchId: Scalars['BigInt']['output'];
   /** Reads and enables pagination through a set of `CharacterArtist`. */
   characterArtistsByCharacterId: CharacterArtistConnection;
+  /** Reads and enables pagination through a set of `CharacterTrait`. */
+  characterTraitsByCharacterId: CharacterTraitConnection;
   /** Reads a single `Class` that is related to this `Character`. */
   classByClassId?: Maybe<Class>;
   classId: Scalars['BigInt']['output'];
@@ -185,6 +210,17 @@ export type CharacterCharacterArtistsByCharacterIdArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CharacterArtistOrderBy>>;
+};
+
+
+export type CharacterCharacterTraitsByCharacterIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CharacterTraitCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CharacterTraitOrderBy>>;
 };
 
 export type CharacterArtist = Node & {
@@ -283,6 +319,58 @@ export enum CharacterOrderBy {
   RowIdDesc = 'ROW_ID_DESC'
 }
 
+export type CharacterTrait = Node & {
+  __typename?: 'CharacterTrait';
+  /** Reads a single `Character` that is related to this `CharacterTrait`. */
+  characterByCharacterId?: Maybe<Character>;
+  characterId: Scalars['BigInt']['output'];
+  /** Reads a single `CustomTrait` that is related to this `CharacterTrait`. */
+  customTraitByTraitId?: Maybe<CustomTrait>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  traitId: Scalars['BigInt']['output'];
+};
+
+/**
+ * A condition to be used against `CharacterTrait` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type CharacterTraitCondition = {
+  /** Checks for equality with the object’s `characterId` field. */
+  characterId?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
+/** A connection to a list of `CharacterTrait` values. */
+export type CharacterTraitConnection = {
+  __typename?: 'CharacterTraitConnection';
+  /** A list of edges which contains the `CharacterTrait` and cursor to aid in pagination. */
+  edges: Array<Maybe<CharacterTraitEdge>>;
+  /** A list of `CharacterTrait` objects. */
+  nodes: Array<Maybe<CharacterTrait>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `CharacterTrait` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A `CharacterTrait` edge in the connection. */
+export type CharacterTraitEdge = {
+  __typename?: 'CharacterTraitEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `CharacterTrait` at the end of the edge. */
+  node?: Maybe<CharacterTrait>;
+};
+
+/** Methods to use when ordering `CharacterTrait`. */
+export enum CharacterTraitOrderBy {
+  CharacterIdAsc = 'CHARACTER_ID_ASC',
+  CharacterIdDesc = 'CHARACTER_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
 export type Class = Node & {
   __typename?: 'Class';
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -323,6 +411,58 @@ export type ClassEdge = {
 
 /** Methods to use when ordering `Class`. */
 export enum ClassOrderBy {
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC'
+}
+
+export type CustomTrait = Node & {
+  __typename?: 'CustomTrait';
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  rowId: Scalars['BigInt']['output'];
+};
+
+/**
+ * A condition to be used against `CustomTrait` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type CustomTraitCondition = {
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['BigInt']['input']>;
+};
+
+/** A connection to a list of `CustomTrait` values. */
+export type CustomTraitConnection = {
+  __typename?: 'CustomTraitConnection';
+  /** A list of edges which contains the `CustomTrait` and cursor to aid in pagination. */
+  edges: Array<Maybe<CustomTraitEdge>>;
+  /** A list of `CustomTrait` objects. */
+  nodes: Array<Maybe<CustomTrait>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `CustomTrait` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A `CustomTrait` edge in the connection. */
+export type CustomTraitEdge = {
+  __typename?: 'CustomTraitEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `CustomTrait` at the end of the edge. */
+  node?: Maybe<CustomTrait>;
+};
+
+/** Methods to use when ordering `CustomTrait`. */
+export enum CustomTraitOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -429,6 +569,18 @@ export enum InfectionOrderBy {
   RowIdDesc = 'ROW_ID_DESC'
 }
 
+/** The root mutation type which contains root level fields which mutate data. */
+export type Mutation = {
+  __typename?: 'Mutation';
+  addCharacterTraits?: Maybe<AddCharacterTraitsPayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationAddCharacterTraitsArgs = {
+  input: AddCharacterTraitsInput;
+};
+
 /** An object with a globally unique `ID`. */
 export type Node = {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -515,12 +667,16 @@ export type Query = Node & {
   allCharacterArtist?: Maybe<ArtistConnection>;
   /** Reads and enables pagination through a set of `CharacterArtist`. */
   allCharacterArtists?: Maybe<CharacterArtistConnection>;
+  /** Reads and enables pagination through a set of `CharacterTrait`. */
+  allCharacterTraits?: Maybe<CharacterTraitConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allCharacters?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allClassCharacter?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Class`. */
   allClasses?: Maybe<ClassConnection>;
+  /** Reads and enables pagination through a set of `CustomTrait`. */
+  allCustomTraits?: Maybe<CustomTraitConnection>;
   /** Reads and enables pagination through a set of `Gender`. */
   allGenders?: Maybe<GenderConnection>;
   /** Reads and enables pagination through a set of `Character`. */
@@ -543,6 +699,8 @@ export type Query = Node & {
   allRarity?: Maybe<AllRarityConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   allRarityCharacter?: Maybe<CharacterConnection>;
+  /** Reads and enables pagination through a set of `CustomTrait`. */
+  allTraitsCharacter?: Maybe<CustomTraitConnection>;
   /** Reads a single `Artist` using its globally unique `ID`. */
   artist?: Maybe<Artist>;
   /** Get a single `Artist`. */
@@ -565,12 +723,22 @@ export type Query = Node & {
   characterByName?: Maybe<Character>;
   /** Get a single `Character`. */
   characterByRowId?: Maybe<Character>;
+  /** Reads a single `CharacterTrait` using its globally unique `ID`. */
+  characterTrait?: Maybe<CharacterTrait>;
+  /** Get a single `CharacterTrait`. */
+  characterTraitByCharacterIdAndTraitId?: Maybe<CharacterTrait>;
   /** Reads a single `Class` using its globally unique `ID`. */
   class?: Maybe<Class>;
   /** Get a single `Class`. */
   classByName?: Maybe<Class>;
   /** Get a single `Class`. */
   classByRowId?: Maybe<Class>;
+  /** Reads a single `CustomTrait` using its globally unique `ID`. */
+  customTrait?: Maybe<CustomTrait>;
+  /** Get a single `CustomTrait`. */
+  customTraitByName?: Maybe<CustomTrait>;
+  /** Get a single `CustomTrait`. */
+  customTraitByRowId?: Maybe<CustomTrait>;
   /** Reads a single `Gender` using its globally unique `ID`. */
   gender?: Maybe<Gender>;
   /** Get a single `Gender`. */
@@ -601,6 +769,8 @@ export type Query = Node & {
   orRaces?: Maybe<CharacterConnection>;
   /** Reads and enables pagination through a set of `Character`. */
   orRarity?: Maybe<CharacterConnection>;
+  /** Reads and enables pagination through a set of `Character`. */
+  orTraits?: Maybe<CharacterConnection>;
   /** Reads a single `PlaceOfBirth` using its globally unique `ID`. */
   placeOfBirth?: Maybe<PlaceOfBirth>;
   /** Get a single `PlaceOfBirth`. */
@@ -685,6 +855,18 @@ export type QueryAllCharacterArtistsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryAllCharacterTraitsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CharacterTraitCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CharacterTraitOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryAllCharactersArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -714,6 +896,18 @@ export type QueryAllClassesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ClassOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllCustomTraitsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<CustomTraitCondition>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CustomTraitOrderBy>>;
 };
 
 
@@ -828,6 +1022,15 @@ export type QueryAllRarityCharacterArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryAllTraitsCharacterArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryArtistArgs = {
   id: Scalars['ID']['input'];
 };
@@ -895,6 +1098,19 @@ export type QueryCharacterByRowIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryCharacterTraitArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCharacterTraitByCharacterIdAndTraitIdArgs = {
+  characterId: Scalars['BigInt']['input'];
+  traitId: Scalars['BigInt']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryClassArgs = {
   id: Scalars['ID']['input'];
 };
@@ -908,6 +1124,24 @@ export type QueryClassByNameArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryClassByRowIdArgs = {
+  rowId: Scalars['BigInt']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCustomTraitArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCustomTraitByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryCustomTraitByRowIdArgs = {
   rowId: Scalars['BigInt']['input'];
 };
 
@@ -1017,6 +1251,15 @@ export type QueryOrRarityArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Array<InputMaybe<Scalars['BigFloat']['input']>>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryOrTraitsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 
@@ -1158,6 +1401,18 @@ export type AllRarityQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllRarityQuery = { __typename?: 'Query', allRarity?: { __typename?: 'AllRarityConnection', nodes: Array<number | null> } | null };
 
+export type AllCustomTraitsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllCustomTraitsQuery = { __typename?: 'Query', allCustomTraits?: { __typename?: 'CustomTraitConnection', nodes: Array<{ __typename?: 'CustomTrait', name: string } | null> } | null };
+
+export type AllTraitsCharacterQueryVariables = Exact<{
+  search: Scalars['String']['input'];
+}>;
+
+
+export type AllTraitsCharacterQuery = { __typename?: 'Query', allTraitsCharacter?: { __typename?: 'CustomTraitConnection', nodes: Array<{ __typename?: 'CustomTrait', id: string, name: string } | null> } | null };
+
 export type CharactersLessThanHeightQueryVariables = Exact<{
   height?: InputMaybe<Scalars['Int']['input']>;
 }>;
@@ -1195,10 +1450,11 @@ export type OrCharactersQueryVariables = Exact<{
   gender: Array<Scalars['String']['input']> | Scalars['String']['input'];
   artist: Array<Scalars['String']['input']> | Scalars['String']['input'];
   rarity: Array<Scalars['BigFloat']['input']> | Scalars['BigFloat']['input'];
+  trait: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type OrCharactersQuery = { __typename?: 'Query', orPlacesOfBirth?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orRaces?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orInfections?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orClasses?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orBranches?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orGenders?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orArtists?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orRarity?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', rarity: number, name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null };
+export type OrCharactersQuery = { __typename?: 'Query', orPlacesOfBirth?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orRaces?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orInfections?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orClasses?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orBranches?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orGenders?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orArtists?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orRarity?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null, orTraits?: { __typename?: 'CharacterConnection', nodes: Array<{ __typename?: 'Character', name: string, classByClassId?: { __typename?: 'Class', name: string } | null } | null> } | null };
 
 
 export const AllArtistsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allArtists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allArtists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllArtistsQuery, AllArtistsQueryVariables>;
@@ -1211,8 +1467,10 @@ export const AllInfectionsDocument = {"kind":"Document","definitions":[{"kind":"
 export const AllPlaceOfBirthsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allPlaceOfBirths"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allPlaceOfBirths"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllPlaceOfBirthsQuery, AllPlaceOfBirthsQueryVariables>;
 export const AllRacesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allRaces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allRaces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllRacesQuery, AllRacesQueryVariables>;
 export const AllRarityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allRarity"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allRarity"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"}}]}}]}}]} as unknown as DocumentNode<AllRarityQuery, AllRarityQueryVariables>;
+export const AllCustomTraitsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCustomTraits"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCustomTraits"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllCustomTraitsQuery, AllCustomTraitsQueryVariables>;
+export const AllTraitsCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allTraitsCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allTraitsCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllTraitsCharacterQuery, AllTraitsCharacterQueryVariables>;
 export const CharactersLessThanHeightDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"charactersLessThanHeight"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"height"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"135"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allHeightCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"charHeight"},"value":{"kind":"Variable","name":{"kind":"Name","value":"height"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CharactersLessThanHeightQuery, CharactersLessThanHeightQueryVariables>;
 export const AllRaceCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allRaceCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"race"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allRaceCharacter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"race"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AllRaceCharacterQuery, AllRaceCharacterQueryVariables>;
 export const AllCharacterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allCharacter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharacters"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"condition"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllCharacterQuery, AllCharacterQueryVariables>;
 export const GetOperatorDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getOperatorDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characterByName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rarity"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"placeOfBirthByPlaceOfBirthId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"raceByRaceId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"infectionByInfectionId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"branchByBranchId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"characterArtistsByCharacterId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"artistByArtistId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"genderByGenderId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetOperatorDetailsQuery, GetOperatorDetailsQueryVariables>;
-export const OrCharactersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"orCharacters"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"class"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"place"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"race"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"infection"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"branch"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gender"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"artist"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"rarity"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigFloat"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"orPlacesOfBirth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"place"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orRaces"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"race"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orInfections"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"infection"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orClasses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"class"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orBranches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"branch"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orGenders"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gender"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orArtists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"artist"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orRarity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"rarity"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rarity"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OrCharactersQuery, OrCharactersQueryVariables>;
+export const OrCharactersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"orCharacters"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"class"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"place"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"race"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"infection"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"branch"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gender"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"artist"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"rarity"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigFloat"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"trait"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"orPlacesOfBirth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"place"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orRaces"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"race"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orInfections"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"infection"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orClasses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"class"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orBranches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"branch"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orGenders"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gender"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orArtists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ops"},"value":{"kind":"Variable","name":{"kind":"Name","value":"artist"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orRarity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"rarity"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"orTraits"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"trait"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"classByClassId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OrCharactersQuery, OrCharactersQueryVariables>;
