@@ -1,11 +1,11 @@
 query allGeneralSearch($search: String) {
-    allGeneralSearch(search: $search) {
-        nodes {
-            id
-            name
-            classByClassId {
-                name
-            }
-        }
+  allGeneralSearch(search: $search) {
+    nodes {
+      id
+      name
+      classByClassId {
+        name
+      }
     }
+  }
 }

@@ -21,33 +21,44 @@ useSeoMeta({
   ogDescription: "Calculate Your Niche",
   twitterDescription: "Calculate Your Niche",
 });
+
+watch(
+  () => store.canExclude,
+  () => {
+    if (!store.canExclude) {
+      store.isAnd = false;
+    }
+  },
+);
 </script>
 
 <template>
   <div class="w-full">
     <UCard class="">
-      <div
-        :class="`flex items-center justify-end gap-4 ${store.canExclude ? 'animate-shake' : ''}`"
-      >
-        <p class="font-semibold">Exclusive</p>
-        <UToggle
-          color="primary"
-          v-model="store.isAnd"
-          :disabled="!store.canExclude"
-        />
-      </div>
-      <div class="grid grid-cols-1 gap-4">
-        <NicheSelectGroup />
-        <div class="flex items-center justify-center">
-          <UButton
-            @click="getNiches"
-            size="md"
-            variant="soft"
-            :disabled="!store.canCompute"
-            >Calculate</UButton
-          >
+      <form @submit.prevent="getNiches">
+        <div
+          :class="`flex items-center justify-end gap-4 ${store.canExclude ? 'animate-shake' : ''}`"
+        >
+          <p class="font-semibold">Exclusive</p>
+          <UToggle
+            color="primary"
+            v-model="store.isAnd"
+            :disabled="!store.canExclude"
+          />
         </div>
-      </div>
+        <div class="grid grid-cols-1 gap-4">
+          <NicheSelectGroup />
+          <div class="flex items-center justify-center">
+            <UButton
+              size="md"
+              variant="soft"
+              :disabled="!store.canCompute"
+              type="submit"
+              >Calculate</UButton
+            >
+          </div>
+        </div>
+      </form>
     </UCard>
     <transition mode="out-in">
       <UCard class="calculation" v-if="results.length > 0" key="has_res">

@@ -1,38 +1,3 @@
-<template>
-  <label class="flex items-center gap-1">
-    <UInput
-      class="mb-4 grow"
-      placeholder="Search for Operator"
-      id="search-character"
-      v-model="input.search as string | undefined"
-    />
-  </label>
-  <UDivider class="py-4" label="Results" />
-  <h2 class="flex gap-2">
-    Operators Found:
-    <UBadge color="primary" variant="subtle">
-      {{ allCharacters.allGeneralSearch?.nodes.length }}
-    </UBadge>
-  </h2>
-  <div
-    class="mt-4 flex max-h-48 flex-col gap-2 overflow-x-hidden overflow-y-scroll rounded-lg p-2 shadow-xl drop-shadow-xl md:max-h-96"
-  >
-    <div
-      class="grid w-full grid-cols-2 place-items-center gap-4 px-4 py-2 text-lg md:grid-cols-3 md:p-0 lg:grid-cols-4 xl:grid-cols-6"
-    >
-      <button
-        class="hover:bg-primary flex w-fit items-center justify-start gap-4 p-2 transition-all hover:cursor-pointer md:w-full"
-        :key="vals?.id"
-        v-for="vals in allCharacters.allGeneralSearch?.nodes"
-        @click="setName(vals!.name)"
-      >
-        <CharIcon :class="vals?.classByClassId?.name as string" />
-        <p class="text-left">{{ vals?.name }}</p>
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useSelectedCharacter } from "~/store/selectedCharacter";
 import type {
@@ -40,11 +5,10 @@ import type {
   AllGeneralSearchQueryVariables,
 } from "~/gql/graphql";
 
-const input = reactive<AllGeneralSearchQueryVariables>({});
 const allCharacters = reactive<AllGeneralSearchQuery>({});
-const timeoutId = ref(-1);
 const router = useRouter();
 const store = useSelectedCharacter();
+const selected = ref<{ id: string; label: string }>();
 
 const { useAsyncGql, useGql } = useGqlWithTypes<
   AllGeneralSearchQuery,
@@ -55,23 +19,34 @@ allCharacters.allGeneralSearch = (
   await useAsyncGql({})
 ).data.value.allGeneralSearch;
 
-watch(input, async () => {
-  clearTimeout(timeoutId.value);
-
-  const id = setTimeout(async () => {
-    const { allGeneralSearch: returnedCharacters } = await useGql(
-      input.search === "" ? {} : input,
-    );
-    allCharacters.allGeneralSearch = returnedCharacters;
-  }, 500);
-
-  timeoutId.value = id as unknown as number;
-});
-
 function setName(name: string) {
   router.push({
     query: { op: name },
   });
   store.setName(name === store.name ? "" : name);
 }
+
+const operators = computed(() =>
+  allCharacters.allGeneralSearch?.nodes.map((elem) => ({
+    id: elem!.id,
+    label: elem?.name,
+    avatar: { src: `/${elem?.classByClassId?.name}.webp`, loading: "lazy" },
+  })),
+);
+
+watch(
+  () => selected.value,
+  () => {
+    setName(selected.value!.label);
+  },
+);
 </script>
+
+<template>
+  <UCommandPalette
+    :groups="[{ key: 'operator', commands: operators }]"
+    v-model="selected"
+    :fuse="{ resultLimit: -1 }"
+    class="max-h-96 overflow-y-auto"
+  />
+</template>

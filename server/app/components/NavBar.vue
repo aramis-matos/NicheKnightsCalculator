@@ -39,7 +39,7 @@ watch(colorMode, () => {
 
 <template>
   <div
-    class="flex flex-col items-baseline justify-between gap-4 pl-4 pt-4 md:flex-row md:gap-0"
+    class="mb-4 flex flex-col items-baseline justify-between gap-4 pl-4 pt-4 md:flex-row md:gap-0"
   >
     <NuxtLink class="flex justify-center gap-4" to="/">
       <NuxtImg src="/logo.png" class="hidden size-8 md:block" />
@@ -55,15 +55,6 @@ watch(colorMode, () => {
         :links="links"
         class="navbar-spacing hidden md:flex"
       />
-      <!-- <UButton
-        :icon="
-          isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'
-        "
-        color="gray"
-        variant="ghost"
-        aria-label="Theme"
-        @click="isDark = !isDark"
-      /> -->
     </div>
   </div>
 </template>
