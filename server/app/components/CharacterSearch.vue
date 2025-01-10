@@ -30,7 +30,11 @@ const operators = computed(() =>
   allCharacters.allGeneralSearch?.nodes.map((elem) => ({
     id: elem!.id,
     label: elem?.name,
-    avatar: { src: `/${elem?.classByClassId?.name}.webp`, loading: "lazy" },
+    avatar: {
+      src: `/${elem?.classByClassId?.name}.webp`,
+      loading: "lazy",
+      class: "invert dark:invert-0",
+    },
   })),
 );
 
