@@ -5,7 +5,7 @@
 -- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
 -- Dumped by pg_dump version 17.2
 
--- Started on 2025-01-08 21:47:31 UTC
+-- Started on 2025-01-13 10:53:46 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,6 +18,29 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- TOC entry 241 (class 1255 OID 16577)
+-- Name: add_character_traits(text[], text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.add_character_traits(chars text[], traits text[]) RETURNS void
+    LANGUAGE sql
+    AS $$
+INSERT INTO "character_traits" (character_id,trait_id)
+(SELECT
+    "character".id AS character_id,
+    "custom_traits".id AS trait_id
+FROM
+    "character"
+    FULL OUTER JOIN "custom_traits" ON 1 = 1
+WHERE
+    "character".name = ANY (chars)
+    AND "custom_traits".name = ANY (traits))
+$$;
+
+
+ALTER FUNCTION public.add_character_traits(chars text[], traits text[]) OWNER TO root;
 
 SET default_tablespace = '';
 
@@ -45,7 +68,7 @@ CREATE TABLE public."character" (
 ALTER TABLE public."character" OWNER TO root;
 
 --
--- TOC entry 237 (class 1255 OID 16396)
+-- TOC entry 237 (class 1255 OID 16397)
 -- Name: all_artist_characters(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -63,7 +86,7 @@ $$;
 ALTER FUNCTION public.all_artist_characters(search text) OWNER TO root;
 
 --
--- TOC entry 238 (class 1255 OID 16397)
+-- TOC entry 238 (class 1255 OID 16398)
 -- Name: all_branch_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -83,7 +106,7 @@ $$;
 ALTER FUNCTION public.all_branch_character(search text) OWNER TO root;
 
 --
--- TOC entry 218 (class 1259 OID 16398)
+-- TOC entry 218 (class 1259 OID 16399)
 -- Name: artist; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -96,7 +119,7 @@ CREATE TABLE public.artist (
 ALTER TABLE public.artist OWNER TO root;
 
 --
--- TOC entry 239 (class 1255 OID 16403)
+-- TOC entry 239 (class 1255 OID 16404)
 -- Name: all_character_artist(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -117,7 +140,7 @@ $$;
 ALTER FUNCTION public.all_character_artist(search text) OWNER TO root;
 
 --
--- TOC entry 240 (class 1255 OID 16404)
+-- TOC entry 240 (class 1255 OID 16405)
 -- Name: all_class_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -137,7 +160,7 @@ $$;
 ALTER FUNCTION public.all_class_character(search text) OWNER TO root;
 
 --
--- TOC entry 244 (class 1255 OID 16405)
+-- TOC entry 244 (class 1255 OID 16406)
 -- Name: all_general_search(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -168,7 +191,7 @@ $$;
 ALTER FUNCTION public.all_general_search(search text) OWNER TO root;
 
 --
--- TOC entry 245 (class 1255 OID 16406)
+-- TOC entry 245 (class 1255 OID 16407)
 -- Name: all_height_character(integer); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -188,7 +211,7 @@ $$;
 ALTER FUNCTION public.all_height_character(char_height integer) OWNER TO root;
 
 --
--- TOC entry 246 (class 1255 OID 16407)
+-- TOC entry 246 (class 1255 OID 16408)
 -- Name: all_infection_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -205,7 +228,7 @@ $$;
 ALTER FUNCTION public.all_infection_character(search text) OWNER TO root;
 
 --
--- TOC entry 247 (class 1255 OID 16408)
+-- TOC entry 247 (class 1255 OID 16409)
 -- Name: all_place_of_birth_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -224,7 +247,7 @@ $$;
 ALTER FUNCTION public.all_place_of_birth_character(search text) OWNER TO root;
 
 --
--- TOC entry 248 (class 1255 OID 16409)
+-- TOC entry 248 (class 1255 OID 16410)
 -- Name: all_race_character(text); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -244,7 +267,7 @@ $$;
 ALTER FUNCTION public.all_race_character(search text) OWNER TO root;
 
 --
--- TOC entry 243 (class 1255 OID 41119)
+-- TOC entry 249 (class 1255 OID 16411)
 -- Name: all_rarity(); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -262,7 +285,7 @@ $$;
 ALTER FUNCTION public.all_rarity() OWNER TO root;
 
 --
--- TOC entry 241 (class 1255 OID 41117)
+-- TOC entry 250 (class 1255 OID 16412)
 -- Name: all_rarity_character(numeric); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -281,7 +304,41 @@ ORDER BY "character".name ASC$$;
 ALTER FUNCTION public.all_rarity_character(search numeric) OWNER TO root;
 
 --
--- TOC entry 249 (class 1255 OID 16410)
+-- TOC entry 227 (class 1259 OID 16441)
+-- Name: custom_traits; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.custom_traits (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.custom_traits OWNER TO root;
+
+--
+-- TOC entry 242 (class 1255 OID 16578)
+-- Name: all_traits_character(text); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.all_traits_character(search text) RETURNS SETOF public.custom_traits
+    LANGUAGE sql STABLE
+    AS $$
+SELECT
+    "custom_traits"
+FROM
+    "character_traits"
+    JOIN "character" ON "character_traits".character_id = "character".id
+    JOIN "custom_traits" ON "character_traits".trait_id = "custom_traits".id
+WHERE
+    "character".name = search
+$$;
+
+
+ALTER FUNCTION public.all_traits_character(search text) OWNER TO root;
+
+--
+-- TOC entry 251 (class 1255 OID 16413)
 -- Name: or_artists(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -302,7 +359,7 @@ $$;
 ALTER FUNCTION public.or_artists(ops text[]) OWNER TO root;
 
 --
--- TOC entry 250 (class 1255 OID 16411)
+-- TOC entry 252 (class 1255 OID 16414)
 -- Name: or_branches(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -316,7 +373,7 @@ $$;
 ALTER FUNCTION public.or_branches(ops text[]) OWNER TO root;
 
 --
--- TOC entry 251 (class 1255 OID 16412)
+-- TOC entry 253 (class 1255 OID 16415)
 -- Name: or_classes(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -330,7 +387,7 @@ $$;
 ALTER FUNCTION public.or_classes(ops text[]) OWNER TO root;
 
 --
--- TOC entry 252 (class 1255 OID 16413)
+-- TOC entry 254 (class 1255 OID 16416)
 -- Name: or_genders(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -344,7 +401,7 @@ $$;
 ALTER FUNCTION public.or_genders(ops text[]) OWNER TO root;
 
 --
--- TOC entry 253 (class 1255 OID 16414)
+-- TOC entry 255 (class 1255 OID 16417)
 -- Name: or_infections(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -358,7 +415,7 @@ $$;
 ALTER FUNCTION public.or_infections(ops text[]) OWNER TO root;
 
 --
--- TOC entry 254 (class 1255 OID 16415)
+-- TOC entry 256 (class 1255 OID 16418)
 -- Name: or_places_of_birth(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -372,7 +429,7 @@ $$;
 ALTER FUNCTION public.or_places_of_birth(ops text[]) OWNER TO root;
 
 --
--- TOC entry 255 (class 1255 OID 16416)
+-- TOC entry 257 (class 1255 OID 16419)
 -- Name: or_races(text[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -386,7 +443,7 @@ $$;
 ALTER FUNCTION public.or_races(ops text[]) OWNER TO root;
 
 --
--- TOC entry 242 (class 1255 OID 41118)
+-- TOC entry 262 (class 1255 OID 16420)
 -- Name: or_rarity(numeric[]); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -406,7 +463,29 @@ $$;
 ALTER FUNCTION public.or_rarity(search numeric[]) OWNER TO root;
 
 --
--- TOC entry 219 (class 1259 OID 16417)
+-- TOC entry 243 (class 1255 OID 16581)
+-- Name: or_traits(text[]); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.or_traits(search text[]) RETURNS SETOF public."character"
+    LANGUAGE sql STABLE
+    AS $$
+SELECT
+    "character"
+FROM
+    "character_traits"
+    JOIN "character" ON "character".id = "character_traits".character_id
+    JOIN "custom_traits" ON "custom_traits".id = "character_traits".trait_id
+WHERE
+    "custom_traits".name = ANY(search)
+ORDER BY "character".name ASC
+$$;
+
+
+ALTER FUNCTION public.or_traits(search text[]) OWNER TO root;
+
+--
+-- TOC entry 219 (class 1259 OID 16421)
 -- Name: artist_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -421,7 +500,7 @@ CREATE SEQUENCE public.artist_id_seq
 ALTER SEQUENCE public.artist_id_seq OWNER TO root;
 
 --
--- TOC entry 3513 (class 0 OID 0)
+-- TOC entry 3516 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: artist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -430,7 +509,7 @@ ALTER SEQUENCE public.artist_id_seq OWNED BY public.artist.id;
 
 
 --
--- TOC entry 220 (class 1259 OID 16418)
+-- TOC entry 220 (class 1259 OID 16422)
 -- Name: branch; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -443,7 +522,7 @@ CREATE TABLE public.branch (
 ALTER TABLE public.branch OWNER TO root;
 
 --
--- TOC entry 221 (class 1259 OID 16423)
+-- TOC entry 221 (class 1259 OID 16427)
 -- Name: branch_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -458,7 +537,7 @@ CREATE SEQUENCE public.branch_id_seq
 ALTER SEQUENCE public.branch_id_seq OWNER TO root;
 
 --
--- TOC entry 3514 (class 0 OID 0)
+-- TOC entry 3517 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: branch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -467,7 +546,7 @@ ALTER SEQUENCE public.branch_id_seq OWNED BY public.branch.id;
 
 
 --
--- TOC entry 222 (class 1259 OID 16424)
+-- TOC entry 222 (class 1259 OID 16428)
 -- Name: character_artist; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -480,7 +559,7 @@ CREATE TABLE public.character_artist (
 ALTER TABLE public.character_artist OWNER TO root;
 
 --
--- TOC entry 223 (class 1259 OID 16427)
+-- TOC entry 223 (class 1259 OID 16431)
 -- Name: character_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -495,7 +574,7 @@ CREATE SEQUENCE public.character_id_seq
 ALTER SEQUENCE public.character_id_seq OWNER TO root;
 
 --
--- TOC entry 3515 (class 0 OID 0)
+-- TOC entry 3518 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: character_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
@@ -504,7 +583,7 @@ ALTER SEQUENCE public.character_id_seq OWNED BY public."character".id;
 
 
 --
--- TOC entry 236 (class 1259 OID 49319)
+-- TOC entry 224 (class 1259 OID 16432)
 -- Name: character_traits; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -517,7 +596,7 @@ CREATE TABLE public.character_traits (
 ALTER TABLE public.character_traits OWNER TO root;
 
 --
--- TOC entry 224 (class 1259 OID 16428)
+-- TOC entry 225 (class 1259 OID 16435)
 -- Name: class; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -530,7 +609,7 @@ CREATE TABLE public.class (
 ALTER TABLE public.class OWNER TO root;
 
 --
--- TOC entry 225 (class 1259 OID 16433)
+-- TOC entry 226 (class 1259 OID 16440)
 -- Name: class_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -545,8 +624,8 @@ CREATE SEQUENCE public.class_id_seq
 ALTER SEQUENCE public.class_id_seq OWNER TO root;
 
 --
--- TOC entry 3516 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 3519 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -554,20 +633,7 @@ ALTER SEQUENCE public.class_id_seq OWNED BY public.class.id;
 
 
 --
--- TOC entry 235 (class 1259 OID 49309)
--- Name: custom_traits; Type: TABLE; Schema: public; Owner: root
---
-
-CREATE TABLE public.custom_traits (
-    id bigint NOT NULL,
-    name character varying NOT NULL
-);
-
-
-ALTER TABLE public.custom_traits OWNER TO root;
-
---
--- TOC entry 234 (class 1259 OID 49308)
+-- TOC entry 228 (class 1259 OID 16446)
 -- Name: custom_traits_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -582,8 +648,8 @@ CREATE SEQUENCE public.custom_traits_id_seq
 ALTER SEQUENCE public.custom_traits_id_seq OWNER TO root;
 
 --
--- TOC entry 3517 (class 0 OID 0)
--- Dependencies: 234
+-- TOC entry 3520 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: custom_traits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -591,7 +657,7 @@ ALTER SEQUENCE public.custom_traits_id_seq OWNED BY public.custom_traits.id;
 
 
 --
--- TOC entry 226 (class 1259 OID 16434)
+-- TOC entry 229 (class 1259 OID 16447)
 -- Name: gender; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -604,7 +670,7 @@ CREATE TABLE public.gender (
 ALTER TABLE public.gender OWNER TO root;
 
 --
--- TOC entry 227 (class 1259 OID 16439)
+-- TOC entry 230 (class 1259 OID 16452)
 -- Name: gender_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -619,8 +685,8 @@ CREATE SEQUENCE public.gender_id_seq
 ALTER SEQUENCE public.gender_id_seq OWNER TO root;
 
 --
--- TOC entry 3518 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3521 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: gender_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -628,7 +694,7 @@ ALTER SEQUENCE public.gender_id_seq OWNED BY public.gender.id;
 
 
 --
--- TOC entry 228 (class 1259 OID 16440)
+-- TOC entry 231 (class 1259 OID 16453)
 -- Name: infection; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -641,7 +707,7 @@ CREATE TABLE public.infection (
 ALTER TABLE public.infection OWNER TO root;
 
 --
--- TOC entry 229 (class 1259 OID 16445)
+-- TOC entry 232 (class 1259 OID 16458)
 -- Name: infection_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -656,8 +722,8 @@ CREATE SEQUENCE public.infection_id_seq
 ALTER SEQUENCE public.infection_id_seq OWNER TO root;
 
 --
--- TOC entry 3519 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3522 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: infection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -665,7 +731,7 @@ ALTER SEQUENCE public.infection_id_seq OWNED BY public.infection.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 16446)
+-- TOC entry 233 (class 1259 OID 16459)
 -- Name: place_of_birth; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -678,7 +744,7 @@ CREATE TABLE public.place_of_birth (
 ALTER TABLE public.place_of_birth OWNER TO root;
 
 --
--- TOC entry 231 (class 1259 OID 16451)
+-- TOC entry 234 (class 1259 OID 16464)
 -- Name: place_of_birth_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -693,8 +759,8 @@ CREATE SEQUENCE public.place_of_birth_id_seq
 ALTER SEQUENCE public.place_of_birth_id_seq OWNER TO root;
 
 --
--- TOC entry 3520 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3523 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: place_of_birth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -702,7 +768,7 @@ ALTER SEQUENCE public.place_of_birth_id_seq OWNED BY public.place_of_birth.id;
 
 
 --
--- TOC entry 232 (class 1259 OID 16452)
+-- TOC entry 235 (class 1259 OID 16465)
 -- Name: race; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -715,7 +781,7 @@ CREATE TABLE public.race (
 ALTER TABLE public.race OWNER TO root;
 
 --
--- TOC entry 233 (class 1259 OID 16457)
+-- TOC entry 236 (class 1259 OID 16470)
 -- Name: race_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
@@ -730,8 +796,8 @@ CREATE SEQUENCE public.race_id_seq
 ALTER SEQUENCE public.race_id_seq OWNER TO root;
 
 --
--- TOC entry 3521 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3524 (class 0 OID 0)
+-- Dependencies: 236
 -- Name: race_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
@@ -739,7 +805,7 @@ ALTER SEQUENCE public.race_id_seq OWNED BY public.race.id;
 
 
 --
--- TOC entry 3285 (class 2604 OID 16458)
+-- TOC entry 3288 (class 2604 OID 16471)
 -- Name: artist id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -747,7 +813,7 @@ ALTER TABLE ONLY public.artist ALTER COLUMN id SET DEFAULT nextval('public.artis
 
 
 --
--- TOC entry 3286 (class 2604 OID 16459)
+-- TOC entry 3289 (class 2604 OID 16472)
 -- Name: branch id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -755,7 +821,7 @@ ALTER TABLE ONLY public.branch ALTER COLUMN id SET DEFAULT nextval('public.branc
 
 
 --
--- TOC entry 3277 (class 2604 OID 16460)
+-- TOC entry 3280 (class 2604 OID 16473)
 -- Name: character id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -763,7 +829,7 @@ ALTER TABLE ONLY public."character" ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3287 (class 2604 OID 16461)
+-- TOC entry 3290 (class 2604 OID 16474)
 -- Name: class id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -771,7 +837,7 @@ ALTER TABLE ONLY public.class ALTER COLUMN id SET DEFAULT nextval('public.class_
 
 
 --
--- TOC entry 3292 (class 2604 OID 49312)
+-- TOC entry 3291 (class 2604 OID 16475)
 -- Name: custom_traits id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -779,7 +845,7 @@ ALTER TABLE ONLY public.custom_traits ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3288 (class 2604 OID 16462)
+-- TOC entry 3292 (class 2604 OID 16476)
 -- Name: gender id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -787,7 +853,7 @@ ALTER TABLE ONLY public.gender ALTER COLUMN id SET DEFAULT nextval('public.gende
 
 
 --
--- TOC entry 3289 (class 2604 OID 16463)
+-- TOC entry 3293 (class 2604 OID 16477)
 -- Name: infection id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -795,7 +861,7 @@ ALTER TABLE ONLY public.infection ALTER COLUMN id SET DEFAULT nextval('public.in
 
 
 --
--- TOC entry 3290 (class 2604 OID 16464)
+-- TOC entry 3294 (class 2604 OID 16478)
 -- Name: place_of_birth id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -803,7 +869,7 @@ ALTER TABLE ONLY public.place_of_birth ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3291 (class 2604 OID 16465)
+-- TOC entry 3295 (class 2604 OID 16479)
 -- Name: race id; Type: DEFAULT; Schema: public; Owner: root
 --
 
@@ -811,7 +877,7 @@ ALTER TABLE ONLY public.race ALTER COLUMN id SET DEFAULT nextval('public.race_id
 
 
 --
--- TOC entry 3489 (class 0 OID 16398)
+-- TOC entry 3492 (class 0 OID 16399)
 -- Dependencies: 218
 -- Data for Name: artist; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -935,7 +1001,7 @@ COPY public.artist (id, name) FROM stdin;
 
 
 --
--- TOC entry 3491 (class 0 OID 16418)
+-- TOC entry 3494 (class 0 OID 16422)
 -- Dependencies: 220
 -- Data for Name: branch; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1010,7 +1076,7 @@ COPY public.branch (id, name) FROM stdin;
 
 
 --
--- TOC entry 3488 (class 0 OID 16385)
+-- TOC entry 3491 (class 0 OID 16385)
 -- Dependencies: 217
 -- Data for Name: character; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1378,7 +1444,7 @@ COPY public."character" (id, name, height, place_of_birth_id, race_id, infection
 
 
 --
--- TOC entry 3493 (class 0 OID 16424)
+-- TOC entry 3496 (class 0 OID 16428)
 -- Dependencies: 222
 -- Data for Name: character_artist; Type: TABLE DATA; Schema: public; Owner: root
 --
@@ -1781,19 +1847,110 @@ COPY public.character_artist (character_id, artist_id) FROM stdin;
 
 
 --
--- TOC entry 3507 (class 0 OID 49319)
--- Dependencies: 236
+-- TOC entry 3498 (class 0 OID 16432)
+-- Dependencies: 224
 -- Data for Name: character_traits; Type: TABLE DATA; Schema: public; Owner: root
 --
 
 COPY public.character_traits (character_id, trait_id) FROM stdin;
 19	1
+45	2
+61	2
+76	2
+80	2
+82	2
+86	2
+87	2
+90	2
+96	2
+101	2
+307	2
+313	2
+318	2
+320	2
+322	2
+325	2
+329	2
+334	2
+343	2
+284	2
+285	2
+4	2
+28	2
+36	2
+41	2
+108	2
+126	2
+142	2
+145	2
+152	2
+155	2
+156	2
+347	2
+360	2
+173	2
+181	2
+186	2
+188	2
+197	2
+202	2
+203	2
+212	2
+221	2
+224	2
+232	2
+240	2
+253	2
+266	2
+188	5
+61	3
+90	3
+12	2
+54	1
+60	1
+62	1
+64	1
+74	1
+78	1
+83	1
+91	1
+99	1
+102	1
+290	1
+295	1
+298	1
+311	1
+327	1
+329	1
+338	1
+277	1
+5	1
+12	1
+18	1
+130	1
+347	1
+350	1
+187	1
+192	1
+201	1
+205	1
+208	1
+209	1
+214	1
+224	1
+225	1
+226	1
+233	1
+242	1
+248	1
+263	1
+6	2
 \.
 
 
 --
--- TOC entry 3495 (class 0 OID 16428)
--- Dependencies: 224
+-- TOC entry 3499 (class 0 OID 16435)
+-- Dependencies: 225
 -- Data for Name: class; Type: TABLE DATA; Schema: public; Owner: root
 --
 
@@ -1810,22 +1967,23 @@ COPY public.class (id, name) FROM stdin;
 
 
 --
--- TOC entry 3506 (class 0 OID 49309)
--- Dependencies: 235
+-- TOC entry 3501 (class 0 OID 16441)
+-- Dependencies: 227
 -- Data for Name: custom_traits; Type: TABLE DATA; Schema: public; Owner: root
 --
 
 COPY public.custom_traits (id, name) FROM stdin;
 1	Yellow
-2	Sniifa
 3	Red
 4	Pink
+2	Armpits
+5	Black
 \.
 
 
 --
--- TOC entry 3497 (class 0 OID 16434)
--- Dependencies: 226
+-- TOC entry 3503 (class 0 OID 16447)
+-- Dependencies: 229
 -- Data for Name: gender; Type: TABLE DATA; Schema: public; Owner: root
 --
 
@@ -1838,8 +1996,8 @@ COPY public.gender (id, name) FROM stdin;
 
 
 --
--- TOC entry 3499 (class 0 OID 16440)
--- Dependencies: 228
+-- TOC entry 3505 (class 0 OID 16453)
+-- Dependencies: 231
 -- Data for Name: infection; Type: TABLE DATA; Schema: public; Owner: root
 --
 
@@ -1851,8 +2009,8 @@ COPY public.infection (id, name) FROM stdin;
 
 
 --
--- TOC entry 3501 (class 0 OID 16446)
--- Dependencies: 230
+-- TOC entry 3507 (class 0 OID 16459)
+-- Dependencies: 233
 -- Data for Name: place_of_birth; Type: TABLE DATA; Schema: public; Owner: root
 --
 
@@ -1895,8 +2053,8 @@ COPY public.place_of_birth (id, name) FROM stdin;
 
 
 --
--- TOC entry 3503 (class 0 OID 16452)
--- Dependencies: 232
+-- TOC entry 3509 (class 0 OID 16465)
+-- Dependencies: 235
 -- Data for Name: race; Type: TABLE DATA; Schema: public; Owner: root
 --
 
@@ -1949,7 +2107,7 @@ COPY public.race (id, name) FROM stdin;
 
 
 --
--- TOC entry 3522 (class 0 OID 0)
+-- TOC entry 3525 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: artist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1958,7 +2116,7 @@ SELECT pg_catalog.setval('public.artist_id_seq', 114, true);
 
 
 --
--- TOC entry 3523 (class 0 OID 0)
+-- TOC entry 3526 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: branch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1967,7 +2125,7 @@ SELECT pg_catalog.setval('public.branch_id_seq', 65, true);
 
 
 --
--- TOC entry 3524 (class 0 OID 0)
+-- TOC entry 3527 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: character_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
@@ -1976,8 +2134,8 @@ SELECT pg_catalog.setval('public.character_id_seq', 360, true);
 
 
 --
--- TOC entry 3525 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 3528 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: class_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
@@ -1985,17 +2143,17 @@ SELECT pg_catalog.setval('public.class_id_seq', 8, true);
 
 
 --
--- TOC entry 3526 (class 0 OID 0)
--- Dependencies: 234
+-- TOC entry 3529 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: custom_traits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.custom_traits_id_seq', 4, true);
+SELECT pg_catalog.setval('public.custom_traits_id_seq', 5, true);
 
 
 --
--- TOC entry 3527 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3530 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: gender_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
@@ -2003,8 +2161,8 @@ SELECT pg_catalog.setval('public.gender_id_seq', 4, true);
 
 
 --
--- TOC entry 3528 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3531 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: infection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
@@ -2012,8 +2170,8 @@ SELECT pg_catalog.setval('public.infection_id_seq', 41, true);
 
 
 --
--- TOC entry 3529 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3532 (class 0 OID 0)
+-- Dependencies: 234
 -- Name: place_of_birth_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
@@ -2021,8 +2179,8 @@ SELECT pg_catalog.setval('public.place_of_birth_id_seq', 34, true);
 
 
 --
--- TOC entry 3530 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3533 (class 0 OID 0)
+-- Dependencies: 236
 -- Name: race_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
@@ -2030,7 +2188,7 @@ SELECT pg_catalog.setval('public.race_id_seq', 44, true);
 
 
 --
--- TOC entry 3298 (class 2606 OID 16467)
+-- TOC entry 3301 (class 2606 OID 16481)
 -- Name: artist artist_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2039,7 +2197,7 @@ ALTER TABLE ONLY public.artist
 
 
 --
--- TOC entry 3300 (class 2606 OID 16469)
+-- TOC entry 3303 (class 2606 OID 16483)
 -- Name: artist artist_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2048,7 +2206,7 @@ ALTER TABLE ONLY public.artist
 
 
 --
--- TOC entry 3302 (class 2606 OID 16471)
+-- TOC entry 3305 (class 2606 OID 16485)
 -- Name: branch branch_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2057,7 +2215,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3304 (class 2606 OID 16473)
+-- TOC entry 3307 (class 2606 OID 16487)
 -- Name: branch branch_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2066,7 +2224,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3306 (class 2606 OID 16475)
+-- TOC entry 3309 (class 2606 OID 16489)
 -- Name: character_artist character_artist_character_id_artist_id_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2075,7 +2233,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3308 (class 2606 OID 16477)
+-- TOC entry 3311 (class 2606 OID 16491)
 -- Name: character_artist character_artist_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2084,7 +2242,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3294 (class 2606 OID 16479)
+-- TOC entry 3297 (class 2606 OID 16493)
 -- Name: character character_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2093,7 +2251,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3296 (class 2606 OID 16481)
+-- TOC entry 3299 (class 2606 OID 16495)
 -- Name: character character_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2102,7 +2260,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3332 (class 2606 OID 49323)
+-- TOC entry 3313 (class 2606 OID 16497)
 -- Name: character_traits character_traits_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2111,7 +2269,7 @@ ALTER TABLE ONLY public.character_traits
 
 
 --
--- TOC entry 3310 (class 2606 OID 16483)
+-- TOC entry 3315 (class 2606 OID 16499)
 -- Name: class class_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2120,7 +2278,7 @@ ALTER TABLE ONLY public.class
 
 
 --
--- TOC entry 3312 (class 2606 OID 16485)
+-- TOC entry 3317 (class 2606 OID 16501)
 -- Name: class class_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2129,7 +2287,7 @@ ALTER TABLE ONLY public.class
 
 
 --
--- TOC entry 3328 (class 2606 OID 49318)
+-- TOC entry 3319 (class 2606 OID 16503)
 -- Name: custom_traits custom_traits_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2138,7 +2296,7 @@ ALTER TABLE ONLY public.custom_traits
 
 
 --
--- TOC entry 3330 (class 2606 OID 49316)
+-- TOC entry 3321 (class 2606 OID 16505)
 -- Name: custom_traits custom_traits_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2147,7 +2305,7 @@ ALTER TABLE ONLY public.custom_traits
 
 
 --
--- TOC entry 3314 (class 2606 OID 16487)
+-- TOC entry 3323 (class 2606 OID 16507)
 -- Name: gender gender_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2156,7 +2314,7 @@ ALTER TABLE ONLY public.gender
 
 
 --
--- TOC entry 3316 (class 2606 OID 16489)
+-- TOC entry 3325 (class 2606 OID 16509)
 -- Name: infection infection_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2165,7 +2323,7 @@ ALTER TABLE ONLY public.infection
 
 
 --
--- TOC entry 3318 (class 2606 OID 16491)
+-- TOC entry 3327 (class 2606 OID 16511)
 -- Name: infection infection_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2174,7 +2332,7 @@ ALTER TABLE ONLY public.infection
 
 
 --
--- TOC entry 3320 (class 2606 OID 16493)
+-- TOC entry 3329 (class 2606 OID 16513)
 -- Name: place_of_birth place_of_birth_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2183,7 +2341,7 @@ ALTER TABLE ONLY public.place_of_birth
 
 
 --
--- TOC entry 3322 (class 2606 OID 16495)
+-- TOC entry 3331 (class 2606 OID 16515)
 -- Name: place_of_birth place_of_birth_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2192,7 +2350,7 @@ ALTER TABLE ONLY public.place_of_birth
 
 
 --
--- TOC entry 3324 (class 2606 OID 16497)
+-- TOC entry 3333 (class 2606 OID 16517)
 -- Name: race race_name_key; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2201,7 +2359,7 @@ ALTER TABLE ONLY public.race
 
 
 --
--- TOC entry 3326 (class 2606 OID 16499)
+-- TOC entry 3335 (class 2606 OID 16519)
 -- Name: race race_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2210,7 +2368,7 @@ ALTER TABLE ONLY public.race
 
 
 --
--- TOC entry 3339 (class 2606 OID 16500)
+-- TOC entry 3342 (class 2606 OID 16520)
 -- Name: character_artist character_artist_artist_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2219,7 +2377,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3340 (class 2606 OID 16505)
+-- TOC entry 3343 (class 2606 OID 16525)
 -- Name: character_artist character_artist_character_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2228,7 +2386,7 @@ ALTER TABLE ONLY public.character_artist
 
 
 --
--- TOC entry 3333 (class 2606 OID 16510)
+-- TOC entry 3336 (class 2606 OID 16530)
 -- Name: character character_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2237,7 +2395,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3334 (class 2606 OID 16515)
+-- TOC entry 3337 (class 2606 OID 16535)
 -- Name: character character_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2246,7 +2404,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3335 (class 2606 OID 16520)
+-- TOC entry 3338 (class 2606 OID 16540)
 -- Name: character character_gender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2255,7 +2413,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3336 (class 2606 OID 16525)
+-- TOC entry 3339 (class 2606 OID 16545)
 -- Name: character character_infection_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2264,7 +2422,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3337 (class 2606 OID 16530)
+-- TOC entry 3340 (class 2606 OID 16550)
 -- Name: character character_place_of_birth_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2273,7 +2431,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3338 (class 2606 OID 16535)
+-- TOC entry 3341 (class 2606 OID 16555)
 -- Name: character character_race_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2282,7 +2440,7 @@ ALTER TABLE ONLY public."character"
 
 
 --
--- TOC entry 3341 (class 2606 OID 49324)
+-- TOC entry 3344 (class 2606 OID 16560)
 -- Name: character_traits character_traits_character_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2291,7 +2449,7 @@ ALTER TABLE ONLY public.character_traits
 
 
 --
--- TOC entry 3342 (class 2606 OID 49329)
+-- TOC entry 3345 (class 2606 OID 16565)
 -- Name: character_traits character_traits_trait_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -2299,7 +2457,7 @@ ALTER TABLE ONLY public.character_traits
     ADD CONSTRAINT character_traits_trait_id_fkey FOREIGN KEY (trait_id) REFERENCES public.custom_traits(id);
 
 
--- Completed on 2025-01-08 21:47:31 UTC
+-- Completed on 2025-01-13 10:53:46 UTC
 
 --
 -- PostgreSQL database dump complete
